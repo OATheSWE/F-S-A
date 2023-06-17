@@ -54,7 +54,8 @@ const times = [
 const students = [
     'John Doe',
     'Billy Bob',
-    'Osborne Molen'
+    'Osborne Molen',
+    'Hope Mikaelson'
 ]
 
 

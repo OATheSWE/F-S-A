@@ -1,12 +1,15 @@
 footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  margin: 0 auto 4rem auto;
+  margin: 0 auto 3rem auto;
   left: 0;
   width: 100%;
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
+  
+
+
 
   p {
     color: rgba(255, 255, 255, 0.55);

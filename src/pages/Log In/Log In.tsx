@@ -3,10 +3,12 @@ import { labels, buttons } from '../../assets/data';
 import  PrimaryLabel from '../../components/Primary Label/Primary Label';
 import  Button from '../../components/Button/Button';
 import RememberMe from '../../components/Remember Me/Remember Me';
+import Footer from '../../components/Footer/Footer';
 
 const LogIn: React.FC = () => {
   
   return (
+    <>
     <div className="popup text-white rounded login">
       <form>
         <h2>Log In</h2>
@@ -15,7 +17,9 @@ const LogIn: React.FC = () => {
         <RememberMe />
         <Button text={buttons.login}/>
       </form>
-    </div >
+    </div>
+   
+    </>
   )
 }
 
