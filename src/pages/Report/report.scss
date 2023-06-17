@@ -1,0 +1,120 @@
+.report {
+  padding: 7rem 1.75rem 3rem 1.75rem;
+  width: 100%;
+  display: none;
+
+  .calendar {
+    text-align: center;
+
+    .calendar-header {
+      padding: 15px 0px 15px 0px;
+      justify-content: space-around;
+      background: #191c24;
+      margin-bottom: 10px;
+
+      .preview-icon {
+        width: 37px;
+        height: 37px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: rgb(33,37,41);
+        transition: all 300ms ease-in-out;
+      }
+
+      .icon-profile {
+        font-size: 21px;
+        color: rgba(255, 255, 255, 0.55);
+        
+      }
+
+      .preview-icon:hover .icon-profile {
+        color: white;
+      }
+
+      .preview-icon:hover {
+        background-color: #0090e7;
+      }
+
+      span {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      @media (min-width: 992px) {
+        padding: 20px 0px 20px 0px;
+      }
+    }
+
+    .calendar-weekdays {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+
+      div {
+        width: 15%;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 0.55);
+
+        @media (min-width: 992px) {
+          width: 12%;
+        }
+      }
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 15px;
+      margin: 10px;
+
+      @media (min-width: 375px) {
+        gap: 4vw;
+      }
+
+      @media (min-width: 576px) {
+        gap: 5vw;
+      }
+
+      .calendar-day {
+        max-width: 30px;
+        height: 30px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: color 0.3s ease-in-out;
+        color: white;
+
+        @media (min-width: 375px) {
+          max-width: 8vw; /* Adjust the width relative to the viewport width */
+          height: 8vw; /* Adjust the height relative to the viewport width */
+        }
+
+        @media (min-width: 576px) {
+          font-size: 19px;
+        }
+
+        @media (min-width: 992px) {
+          max-width: 7vw; /* Adjust the width relative to the viewport width */
+          max-height: 7vw; /* Adjust the height relative to the viewport width */
+        }
+      }
+
+      .calendar-day:hover {
+        color: rgba(255, 255, 255, 0.55);
+      }
+
+      .calendar-day.current-day {
+        background-color: #0090e7;
+      }
+    }
+  }
+
+  @media (min-width: 992px) {
+    padding: 8rem 2.5rem 3rem 6.5rem;
+  }
+}

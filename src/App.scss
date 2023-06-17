@@ -1,0 +1,20 @@
+body {
+    background: #000;
+    overflow-y: scroll
+}
+
+
+@import "./components/Navbar/Navbar.scss";
+@import "./components/Footer/Footer.scss";
+@import "./pages/Report/report.scss";
+@import "./pages/Report/Record Report/Popup Recorder.scss";
+@import "./pages/Log In/Log In.scss";
+@import "./pages/Sign Up/Sign Up.scss";
+@import "./pages/Submit Report/Submit Report.scss";
+@import "./pages/Settings/Settings.scss";
+@import "./pages/Students/Students.scss";
+@import "./pages/Students/New Students/New Students.scss";
+@import "./pages/Students/Students List/Students List.scss";
+
+
+@import "./bootstrap.min.css";

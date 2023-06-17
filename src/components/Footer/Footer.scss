@@ -1,0 +1,14 @@
+footer {
+  position: absolute;
+  bottom: 0;
+  margin: 0 auto 4rem auto;
+  left: 0;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    color: rgba(255, 255, 255, 0.55);
+  }
+}

@@ -1,0 +1,85 @@
+.list-container {
+  margin: 0 1.8rem;
+  display: none;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  
+ @media (min-width: 650px) and (max-width: 1055px) {
+  grid-template-columns: 1fr 1fr;
+ }
+
+ @media (min-width: 992px) {
+  margin: 0 2.5rem 0 6.5rem;
+ }
+
+ @media (min-width: 1055px) {
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+ }
+
+ 
+
+  .students-list {
+    display: flex;
+    margin-bottom: 1rem;
+    justify-content: start;
+    margin: 0;
+
+    @media (min-width: 576px) and (max-width: 992px) {
+      
+    }
+
+    form {
+
+      @media (min-width: 992px) {
+        padding: 1.8rem 2rem 2rem 2rem;
+       }
+
+      div {
+        border: 2px solid #2c2e33;
+        padding: 6px 10px;
+        max-width: 70%;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        transition: all 300ms ease-in-out;
+        cursor: pointer;
+
+        @media (min-width: 576px) {
+          border-radius: 15px;
+          padding: 7px 10px;
+          gap: 15px;
+        }
+
+        .icon-locate {
+          margin-top: 1px;
+        }
+      }
+
+      div:hover {
+        background-color: #0090e7;
+        border-color: #0090e7;
+      }
+
+      .icon-delete {
+        position: absolute;
+        top: 1.8rem;
+        right: 1.3rem;
+        font-size: 1.35rem;
+        cursor: pointer;
+        color: #0090e7;
+      }
+
+      .icon-edit {
+        position: absolute;
+        bottom: 2rem;
+        right: 1.3rem;
+        font-size: 1.35rem;
+        cursor: pointer;
+        color: #0090e7;
+      }
+    }
+  }
+}
