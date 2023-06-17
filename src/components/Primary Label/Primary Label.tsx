@@ -12,6 +12,10 @@ const PrimaryLabel: React.FC<LabelProps> = ({ text, inputType }) => {
       {inputType && <input type={inputType} className="rounded" />}
     </label>
   );
-};
+}; 
+
+
+
+
 
 export default PrimaryLabel;

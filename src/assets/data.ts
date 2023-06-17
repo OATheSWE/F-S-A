@@ -35,23 +35,31 @@ const buttons = {
     submit: 'Submit'
 }
 
-const time = {
-    am6: '6:00 AM',
-    am7: '7:00 AM',
-    am8: '8:00 AM',
-    am9: '9:00 AM',
-    am10: '10:00 AM',
-    am11: '6:00 AM',
-    am12: '6 AM',
-    pm1: '6 AM',
-    pm2: '6 AM',
-    pm3: '6 AM',
-    pm4: '6 AM',
-    pm5: '6 AM',
-    pm6: '6 AM',
-}
+const times = [
+    '6:00 AM',
+    '7:00 AM',
+    '8:00 AM',
+    '9:00 AM',
+    '10:00 AM',
+    '11:00 AM',
+    '12:00 PM',
+    '1:00 PM',
+    '2:00 PM',
+    '3:00 PM',
+    '4:00 PM',
+    '5:00 PM',
+    '6:00 PM',
+]
+
+const students = [
+    'John Doe',
+    'Billy Bob',
+    'Osborne Molen'
+]
+
+
 
 
   
-export { labels, navs, buttons, time  };
+export { labels, navs, buttons, times, students  };
   

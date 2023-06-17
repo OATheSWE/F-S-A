@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 
+
 interface LabelProps {
     text: string;
     inputType?: string;
+    array: string[];
 }
 
-const SecondaryLabel: React.FC<LabelProps> = ({ text }) => {
+const SecondaryLabel: React.FC<LabelProps> = ({ text, array }) => {
 
     const [isMenuVisible, setMenuVisible] = useState(false);
 
@@ -22,17 +24,17 @@ const SecondaryLabel: React.FC<LabelProps> = ({ text }) => {
 
     return (
         <label>
-            Start Hour:
+            {text}
             <div className="select rounded">
                 <div className="dropdown-toggle" onClick={handleMenu}>
                     Open
                 </div>
                 <ul className="dropdown-menu" style={dropdownStyle}>
-                    <li className="dropdown-item rounded">Item 1</li>
-                    <li className="dropdown-item rounded">Item 2</li>
-                    <li className="dropdown-item rounded">Item 3</li>
-                    <li className="dropdown-item rounded">Item 2</li>
-                    <li className="dropdown-item rounded">Item 3</li>
+                    {array.map((time, index) => (
+                        <li className="dropdown-item rounded" key={index}>
+                            {time}
+                        </li>
+                    ))}
                 </ul>
             </div>
         </label>
