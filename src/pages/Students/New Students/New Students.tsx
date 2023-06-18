@@ -1,27 +1,29 @@
 import React from 'react';
 import { FaMapMarkerAlt } from '../../../assets/IconImports';
+import PrimaryLabel from '../../../components/Primary Label/Primary Label';
+import { buttons, labels } from '../../../assets/data';
+import Button from '../../../components/Button/Button';
+import Footer from '../../../components/Footer/Footer';
+
 
 
 const NewStudents: React.FC = () => {
 
     return (
-        <div className="popup text-white rounded new-students">
-            <form>
-                <label>
-                    Name:
-                    <input type="text" className="rounded" />
-                </label>
-                <label>
-                    Book Of Study:
-                    <input type="text" className="rounded" />
-                </label>
-                <div>
-                   Pin Location
-                   <FaMapMarkerAlt className="icon-locate"/>
-                </div>
-                <button type="submit" className="rounded">Add</button>
-            </form>
-        </div >
+        <div className="whole-container">
+            <div className="popup text-white rounded new-students">
+                <form>
+                    <PrimaryLabel text={labels.name} inputType='text'/>
+                    <PrimaryLabel text={labels.bofstudy} inputType='text'/>
+                    <div>
+                        Pin Location
+                        <FaMapMarkerAlt className="icon-locate" />
+                    </div>
+                    <Button text={buttons.add}/>
+                </form>
+            </div >
+            <Footer />
+        </div>
     )
 }
 

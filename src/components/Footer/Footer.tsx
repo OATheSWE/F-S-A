@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
 
     return (
         <footer>
-            <p>&copy; 2023 Your Company. All rights reserved.</p>
+            <p>&copy; 2023 OATheSWE. All rights reserved.</p>
         </footer>
     )
 }

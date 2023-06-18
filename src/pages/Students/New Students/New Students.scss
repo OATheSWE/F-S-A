@@ -1,34 +1,34 @@
-.new-students {
-  display: none;
+.whole-container {
+  .new-students {
+    form {
+      div {
+        border: 2px solid #2c2e33;
+        padding: 6px 10px;
+        width: 50%;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-top: 1.7rem;
+        transition: all 300ms ease-in-out;
+        cursor: pointer;
 
-  form {
-    div {
-      border: 2px solid #2c2e33;
-      padding: 6px 10px;
-      width: 50%;
-      border-radius: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin-top: 1.7rem;
-      transition: all 300ms ease-in-out;
-      cursor: pointer;
+        @media (min-width: 576px) {
+          border-radius: 15px;
+          padding: 7px 10px;
+          gap: 15px;
+        }
 
-      @media (min-width: 576px) {
-        border-radius: 15px;
-        padding: 7px 10px;
-        gap: 15px;
-}
-
-      .icon-locate {
-        margin-top: 1px;
+        .icon-locate {
+          margin-top: 1px;
+        }
       }
-    }
 
-    div:hover {
-      background-color: #0090e7;
-      border-color: #0090e7;
+      div:hover {
+        background-color: #0090e7;
+        border-color: #0090e7;
+      }
     }
   }
 }

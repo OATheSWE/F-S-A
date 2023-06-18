@@ -1,52 +1,44 @@
-.settings {
-    display: none;
+.whole-container {
+  .settings {
 
     form {
-        h2 {
-          margin-bottom: 1.5rem;
-        }
-    
-        label {
-          .navbar-brand {
-            margin-top: -8px;
-
-            img {
-              width: 35px;
-            }
-
-          }
-
-          @media (min-width:576px){
-            flex-direction: row;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-
-            .navbar-brand {
-                margin-top: -14px;
-              img {
-                width: 50px;
-              }
-  
-            }
-            
-            
-            input {
-              margin-top: -5px;
-            }
-          }
-
-          @media (min-width:992px){
-            input {
-              margin-top: -5px;
-              width: 40vw;
-            }
-          }
-          
-
-        }
-
-        
-    
+      h2 {
+        margin-bottom: 1.5rem;
       }
 
+      label {
+        .navbar-brand {
+          margin-top: -8px;
+
+          img {
+            width: 35px;
+          }
+        }
+
+        @media (min-width: 576px) {
+          flex-direction: row;
+          justify-content: space-between;
+          margin-bottom: 2rem;
+
+          .navbar-brand {
+            margin-top: -14px;
+            img {
+              width: 50px;
+            }
+          }
+
+          input {
+            margin-top: -5px;
+          }
+        }
+
+        @media (min-width: 992px) {
+          input {
+            margin-top: -5px;
+            width: 40vw;
+          }
+        }
+      }
+    }
+  }
 }

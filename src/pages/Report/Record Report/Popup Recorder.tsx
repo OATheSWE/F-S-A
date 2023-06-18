@@ -10,7 +10,7 @@ const PopupRecorder: React.FC = () => {
 
 
   return (
-    <>
+    <div className="whole-container">
       <div className="popup text-white rounded">
         <form>
           <h2>Activity Form</h2>
@@ -23,7 +23,7 @@ const PopupRecorder: React.FC = () => {
         </form>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

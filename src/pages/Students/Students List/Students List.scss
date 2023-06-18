@@ -1,6 +1,6 @@
 .list-container {
   margin: 0 1.8rem;
-  display: none;
+  display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
   
@@ -59,8 +59,8 @@
       }
 
       div:hover {
-        background-color: #0090e7;
-        border-color: #0090e7;
+        background-color: $accent-color;
+        border-color: $accent-color;
       }
 
       .icon-delete {
@@ -69,7 +69,7 @@
         right: 1.3rem;
         font-size: 1.35rem;
         cursor: pointer;
-        color: #0090e7;
+        color: $accent-color;
       }
 
       .icon-edit {
@@ -78,7 +78,7 @@
         right: 1.3rem;
         font-size: 1.35rem;
         cursor: pointer;
-        color: #0090e7;
+        color: $accent-color;
       }
     }
   }

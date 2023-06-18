@@ -3,7 +3,7 @@ import { labels, buttons } from '../../assets/data';
 import  PrimaryLabel from '../../components/Primary Label/Primary Label';
 import  Button from '../../components/Button/Button';
 import RememberMe from '../../components/Remember Me/Remember Me';
-import Footer from '../../components/Footer/Footer';
+
 
 const LogIn: React.FC = () => {
   
@@ -18,7 +18,6 @@ const LogIn: React.FC = () => {
         <Button text={buttons.login}/>
       </form>
     </div>
-   
     </>
   )
 }

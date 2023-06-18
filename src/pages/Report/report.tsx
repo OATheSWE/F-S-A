@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from '../../assets/IconImports';
 import PopupRecorder from './Record Report/Popup Recorder';
+import Footer from '../../components/Footer/Footer';
 
 const Report: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -42,13 +43,13 @@ const Report: React.FC = () => {
         // Render days of the month
         for (let i = 1; i <= daysInMonth; i++) {
             const isCurrentDay = i === currentDate.getDate();
-        const dayClass = isCurrentDay ? "calendar-day current-day rounded" : "calendar-day bg-dark rounded";
-        days.push(
-            <div className={dayClass} key={i}>
-                {i}
-            </div>
-        );
-        
+            const dayClass = isCurrentDay ? "calendar-day current-day rounded" : "calendar-day bg-dark rounded";
+            days.push(
+                <div className={dayClass} key={i}>
+                    {i}
+                </div>
+            );
+
         }
 
         return days;
@@ -80,8 +81,8 @@ const Report: React.FC = () => {
                     <div className="calendar-days">{renderCalendarDays()}</div>
                 </div>
             </div>
+            <Footer />
         </div>
-
     );
 };
 

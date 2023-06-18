@@ -1,22 +1,21 @@
-.signup {
-    display: none;
+.whole-container {
+  .signup {
 
     form {
-        h2 {
-          margin-bottom: 1.5rem;
-        }
-    
-        div {
-            position: relative;
-            font-size: 14px;
-    
-            input {
-                position: absolute;
-                top: 5px;
-                left: 6.5rem;
-            }
-        }
-    
+      h2 {
+        margin-bottom: 1.5rem;
       }
 
+      div {
+        position: relative;
+        font-size: 14px;
+
+        input {
+          position: absolute;
+          top: 5px;
+          left: 6.5rem;
+        }
+      }
+    }
+  }
 }

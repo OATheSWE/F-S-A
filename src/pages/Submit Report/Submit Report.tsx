@@ -1,34 +1,24 @@
 import React from 'react';
+import PrimaryLabel from '../../components/Primary Label/Primary Label';
+import { buttons, labels } from '../../assets/data';
+import Button from '../../components/Button/Button';
 
 const SubmitReport: React.FC = () => {
-  
+
   return (
-    <div className="popup text-white rounded submit-report">
-      <form>
-        <h2>Submit Report</h2>
-        <label>
-          Total Hours:
-          <input type="text" className="rounded" />
-        </label>
-        <label>
-          Total Videos:
-          <input type="text" className="rounded" />
-        </label>
-        <label>
-          Total Placements:
-          <input type="text" className="rounded" />
-        </label>
-        <label>
-          Total Return Visits:
-          <input type="text" className="rounded" />
-        </label>
-        <label>
-          Total Bible Studies Conducted:
-          <input type="text" className="rounded" />
-        </label>
-        <button type="submit" className="rounded">Submit</button>
-      </form>
-    </div >
+    <div className="whole-container">
+      <div className="popup text-white rounded submit-report">
+        <form>
+          <h2>Submit Report</h2>
+          <PrimaryLabel text={labels.thours} inputType='number' />
+          <PrimaryLabel text={labels.tvideos} inputType='number' />
+          <PrimaryLabel text={labels.tplacements} inputType='number' />
+          <PrimaryLabel text={labels.treturnv} inputType='number' />
+          <PrimaryLabel text={labels.tbstudy} inputType='number' />
+          <Button text={buttons.submit} />
+        </form>
+      </div >
+    </div>
   )
 }
 

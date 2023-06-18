@@ -1,32 +1,32 @@
-.students {
-  display: none;
-  margin-bottom: 2rem;
+.whole-container {
+  .students {
+    margin-bottom: 2rem;
 
-  form {
-    padding: 1rem 1.5rem 1rem 1.5rem;
-    h2 {
-      margin-bottom: 1.5rem;
-    }
-
-    label {
-      flex-direction: row;
-      justify-content: space-between;
-      gap: 0.6rem;
-    
-
-      input {
-        flex: 1;
-        min-width: 100px;
+    form {
+      padding: 1rem 1.5rem 1rem 1.5rem;
+      h2 {
+        margin-bottom: 1.5rem;
       }
 
-      button {
-        padding: 10px 12px;
-        margin: 0;
-        background-color: #0090e7;
-        border-color: #0090e7;
+      label {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 0.6rem;
 
-        .plus-icon {
-          font-size: 1.2rem;
+        input {
+          flex: 1;
+          min-width: 100px;
+        }
+
+        button {
+          padding: 10px 12px;
+          margin: 0;
+          background-color: $accent-color;
+          border-color: $accent-color;
+
+          .plus-icon {
+            font-size: 1.2rem;
+          }
         }
       }
     }
