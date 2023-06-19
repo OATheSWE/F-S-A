@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TbReport, SlPeople, BsSend, HiBars3BottomLeft, ImExit } from '../../../assets/IconImports';
-import AsideItem from '../../Aside Item/aside item';
+import AsideItem from '../Aside Item/Aside Item';
 import { classNames, navs } from '../../../assets/data';
 
 const DesktopAside: React.FC = () => {
@@ -53,12 +53,14 @@ const DesktopAside: React.FC = () => {
                     spanStyle={asideStyle3}
                     span={navs.logout}
                     />
-                    <a href="#" className="d-flex">
-                        <div className="preview-icon bg-dark rounded-circle">
-                            <BsSend className="icon-profile" />
-                        </div>
-                        <span style={asideStyle3}>Submit</span>
-                    </a>
+                    <AsideItem 
+                    link="#" 
+                    anchor={classNames.dAsideAnchor} 
+                    div={classNames.dAsideAnchorDiv} 
+                    icon={<BsSend className={classNames.dAsideAnchorDivIcon} />}
+                    spanStyle={asideStyle3}
+                    span={navs.submit}
+                    />
                 </div>
             </aside>
         </div>
