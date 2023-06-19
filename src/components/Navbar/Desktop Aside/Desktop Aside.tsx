@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TbReport, SlPeople, BsSend, HiBars3BottomLeft, ImExit } from '../../../assets/IconImports';
+import AsideItem from '../../Aside Item/aside item';
+import { classNames, navs } from '../../../assets/data';
 
 const DesktopAside: React.FC = () => {
 
@@ -18,6 +20,7 @@ const DesktopAside: React.FC = () => {
         opacity: isExpanded ? '1' : '0',
     };
 
+
     return (
         /* Sidebar Button & DesktopSidebar */
         <div className="nav-sidebar">
@@ -26,24 +29,30 @@ const DesktopAside: React.FC = () => {
             </button>
             <aside>
                 <div className="desktop-aside" style={asideStyle2}>
-                    <a href="#" className="d-flex">
-                        <div className="preview-icon bg-dark rounded-circle">
-                            <TbReport className="icon-profile text-success" />
-                        </div>
-                        <span style={asideStyle3}>Report</span>
-                    </a>
-                    <a href="#" className="d-flex">
-                        <div className="preview-icon bg-dark rounded-circle">
-                            <SlPeople className="icon-profile text-warning" />
-                        </div>
-                        <span style={asideStyle3}>Students</span>
-                    </a>
-                    <a href="#" className="d-flex">
-                        <div className="preview-icon bg-dark rounded-circle">
-                            <ImExit className="icon-profile text-danger" />
-                        </div>
-                        <span style={asideStyle3}>Log Out</span>
-                    </a>
+                    <AsideItem 
+                    link="#" 
+                    anchor={classNames.dAsideAnchor} 
+                    div={classNames.dAsideAnchorDiv} 
+                    icon={<TbReport className={`classNames.dAsideAnchorDivIcon text-success`} />}
+                    spanStyle={asideStyle3}
+                    span={navs.report}
+                    />
+                    <AsideItem 
+                    link="#" 
+                    anchor={classNames.dAsideAnchor} 
+                    div={classNames.dAsideAnchorDiv} 
+                    icon={<SlPeople className={`classNames.dAsideAnchorDivIcon text-warning`} />}
+                    spanStyle={asideStyle3}
+                    span={navs.students}
+                    />
+                    <AsideItem 
+                    link="#" 
+                    anchor={classNames.dAsideAnchor} 
+                    div={classNames.dAsideAnchorDiv} 
+                    icon={<ImExit className={`classNames.dAsideAnchorDivIcon text-danger`} />}
+                    spanStyle={asideStyle3}
+                    span={navs.logout}
+                    />
                     <a href="#" className="d-flex">
                         <div className="preview-icon bg-dark rounded-circle">
                             <BsSend className="icon-profile" />

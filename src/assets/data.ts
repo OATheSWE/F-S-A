@@ -25,7 +25,7 @@ const navs = {
     settings: 'Settings',
     logout: 'Log Out',
     submit: 'Submit'
-}
+};
 
 const buttons = {
     login: 'Log In',
@@ -33,7 +33,7 @@ const buttons = {
     signup: 'Sign Up',
     add: 'Add',
     submit: 'Submit'
-}
+};
 
 const times = [
     '6:00 AM',
@@ -49,18 +49,26 @@ const times = [
     '4:00 PM',
     '5:00 PM',
     '6:00 PM',
-]
+];
 
 const students = [
     'John Doe',
     'Billy Bob',
     'Osborne Molen',
     'Hope Mikaelson'
-]
+];
+
+const classNames = {
+    dAsideAnchor: 'd-flex',
+    mAsideAnchor: 'd-flex flex-column align-items-center text-decoration-none link text-white',
+    dAsideAnchorDiv: 'preview-icon bg-dark rounded-circle',
+    dAsideAnchorDivIcon: 'icon-profile',
+    mAsideAnchorIcon: 'icon',
+};
 
 
 
 
   
-export { labels, navs, buttons, times, students  };
+export { labels, navs, buttons, times, students, classNames  };
   
