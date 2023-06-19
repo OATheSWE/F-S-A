@@ -20,7 +20,6 @@ function App() {
   return (
     <div className="body">
       <Navbar />
-      <SubmitReport />
      
     </div>
   )
