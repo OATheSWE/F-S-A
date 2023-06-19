@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TbReport, SlPeople, BsSend, HiBars3BottomRight } from '../../../assets/IconImports';
+import AsideItem from '../Aside Item/Aside Item';
+import { classNames, navs } from '../../../assets/data';
 
 const MobileAside: React.FC = () => {
   const [isAsideVisible, setAsideVisible] = useState(false);
@@ -23,18 +25,24 @@ const MobileAside: React.FC = () => {
       <aside>
         <div className="mobile-aside" style={asideStyle}>
           <div className="d-flex justify-content-around">
-            <a href="#" className="d-flex flex-column align-items-center text-decoration-none link text-white">
-              <TbReport className="icon" />
-              <span>Report</span>
-            </a>
-            <a href="#" className="d-flex flex-column align-items-center text-decoration-none link text-white">
-              <SlPeople className="icon" />
-              <span>Students</span>
-            </a>
-            <a href="#" className="d-flex flex-column align-items-center text-decoration-none link">
-              <BsSend className="icon" />
-              <span>Submit</span>
-            </a>
+            <AsideItem
+              link="#"
+              anchor={classNames.mAsideAnchor}
+              icon={<TbReport className={classNames.mAsideAnchorIcon} />}
+              span={navs.report}
+            />
+            <AsideItem
+              link="#"
+              anchor={classNames.mAsideAnchor}
+              icon={<SlPeople className={classNames.mAsideAnchorIcon} />}
+              span={navs.students}
+            />
+            <AsideItem
+              link="#"
+              anchor={`d-flex flex-column align-items-center text-decoration-none link`}
+              icon={<BsSend className={classNames.mAsideAnchorIcon} />}
+              span={navs.submit}
+            />
           </div>
         </div>
       </aside>
