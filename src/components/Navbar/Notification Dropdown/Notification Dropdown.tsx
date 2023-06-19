@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaBell, TbReport, BsFillGearFill, SlPeople } from '../../../assets/IconImports';
+import DropdownItem from '../Dropdown Item/Dropdown Item';
+import { classNames, navs, notifications } from '../../../assets/data';
 
 const NotificationDropdown: React.FC = () => {
 
@@ -42,35 +44,41 @@ const NotificationDropdown: React.FC = () => {
         <ul className="dropdown-menu" style={notifyStyle} id="menu1">
           <li><h5 className="dropdown-header text-white">Recent Notifications</h5></li>
           <li className="dropdown-divider text-white"></li>
-          <li className="d-flex position-relative">
-            <div className="preview-icon bg-dark rounded-circle">
-              <TbReport className="icon-profile text-success" />
-            </div>
-            <div className="preview-item-content">
-              <h6 className="text-white mb-1">Report</h6>
-              <p className="mb-0 small-text">Your feild service report</p>
-            </div>
-          </li>
+          <DropdownItem
+              liStyle={classNames.liDropdown}
+              liDivStyle1={classNames.liDivDropdown}
+              icon={<TbReport className={`classNames.dAsideAnchorDivIcon text-success`} />}
+              renderDiv={true}
+              liDivStyle2={classNames.liDiv2Dropdown}
+              h6={classNames.liDiv2h6Dropdown}
+              h6Content={navs.report}
+              p={classNames.liDiv2PDropdown}
+              pContent={notifications.report}
+            />
           <li className="dropdown-divider"></li>
-          <li className="d-flex position-relative">
-            <div className="preview-icon bg-dark rounded-circle">
-              <BsFillGearFill className="icon-profile text-danger" />
-            </div>
-            <div className="preview-item-content">
-              <h6 className="text-white mb-1">Settings</h6>
-              <p className="mb-0 small-text">Update mobile number</p>
-            </div>
-          </li>
+          <DropdownItem
+              liStyle={classNames.liDropdown}
+              liDivStyle1={classNames.liDivDropdown}
+              icon={<BsFillGearFill className={`classNames.dAsideAnchorDivIcon text-danger`} />}
+              renderDiv={true}
+              liDivStyle2={classNames.liDiv2Dropdown}
+              h6={classNames.liDiv2h6Dropdown}
+              h6Content={navs.settings}
+              p={classNames.liDiv2PDropdown}
+              pContent={notifications.settings}
+            />
           <li className="dropdown-divider"></li>
-          <li className="d-flex position-relative">
-            <div className="preview-icon bg-dark rounded-circle">
-              <SlPeople className="icon-profile text-warning" />
-            </div>
-            <div className="preview-item-content">
-              <h6 className="text-white mb-1">Students</h6>
-              <p className="mb-0 small-text">You haven't studied with john in a while</p>
-            </div>
-          </li>
+          <DropdownItem
+              liStyle={classNames.liDropdown}
+              liDivStyle1={classNames.liDivDropdown}
+              icon={<SlPeople className={`classNames.dAsideAnchorDivIcon text-warning`} />}
+              renderDiv={true}
+              liDivStyle2={classNames.liDiv2Dropdown}
+              h6={classNames.liDiv2h6Dropdown}
+              h6Content={navs.students}
+              p={classNames.liDiv2PDropdown}
+              pContent={notifications.students}
+            />
         </ul>
       </div>
     );

@@ -64,11 +64,23 @@ const classNames = {
     dAsideAnchorDiv: 'preview-icon bg-dark rounded-circle',
     dAsideAnchorDivIcon: 'icon-profile',
     mAsideAnchorIcon: 'icon',
+    liDropdown: 'd-flex position-relative',
+    liDivDropdown: 'preview-icon bg-dark rounded-circle',
+    liDiv2Dropdown: 'preview-item-content',
+    liDiv2h6Dropdown: 'text-white mb-1',
+    liDiv2PDropdown: 'mb-0 small-text',
+    liADropdown: 'dropdown-item text-white',
 };
+
+const notifications = {
+    report: 'Your feild service report',
+    settings: 'Update mobile number',
+    students: "You haven't studied with john in a while",
+}
 
 
 
 
   
-export { labels, navs, buttons, times, students, classNames  };
+export { labels, navs, buttons, times, students, classNames, notifications  };
   

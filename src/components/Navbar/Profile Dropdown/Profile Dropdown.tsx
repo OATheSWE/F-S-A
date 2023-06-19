@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { BsFillGearFill, ImExit } from '../../../assets/IconImports';
 import Avatar from '../../../assets/avatar.png';
+import DropdownItem from '../Dropdown Item/Dropdown Item';
+import { classNames, navs } from '../../../assets/data';
 
 const ProfileDropdown: React.FC = () => {
 
@@ -45,19 +47,25 @@ const ProfileDropdown: React.FC = () => {
             <ul className="dropdown-menu" style={dropdownStyle} id="menu2">
                 <li><h5 className="dropdown-header text-white">Profile</h5></li>
                 <li className="dropdown-divider text-white"></li>
-                <li className="d-flex position-relative">
-                    <div className="preview-icon bg-dark rounded-circle">
-                        <BsFillGearFill className="icon-profile text-success" />
-                    </div>
-                    <a className="dropdown-item text-white" href="#">Settings</a>
-                </li>
+                <DropdownItem
+                    liStyle={classNames.liDropdown}
+                    liDivStyle1={classNames.liDivDropdown}
+                    icon={<BsFillGearFill className={`classNames.dAsideAnchorDivIcon text-success`} />}
+                    renderDiv={false}
+                    liAStyle={classNames.liADropdown}
+                    link="#"
+                    linkText={navs.settings}
+                />
                 <li className="dropdown-divider"></li>
-                <li className="d-flex position-relative">
-                    <div className="preview-icon bg-dark rounded-circle">
-                        <ImExit className="icon-profile text-danger" />
-                    </div>
-                    <a className="dropdown-item text-white" href="#">Log Out</a>
-                </li>
+                <DropdownItem
+                    liStyle={classNames.liDropdown}
+                    liDivStyle1={classNames.liDivDropdown}
+                    icon={<ImExit className={`classNames.dAsideAnchorDivIcon text-danger`} />}
+                    renderDiv={false}
+                    liAStyle={classNames.liADropdown}
+                    link="#"
+                    linkText={navs.logout}
+                />
             </ul>
         </div>
     );
