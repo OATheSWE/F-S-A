@@ -1,10 +1,15 @@
 import React from 'react';
 
-const RememberMe: React.FC = () => {
+interface RememeberMeProps {
+    checked: boolean;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const RememberMe: React.FC<RememeberMeProps> = ({ checked, onChange }) => {
     return (
         <div>
             Remember Me
-            <input type="checkbox" className="rounded " />
+            <input type="checkbox" className="rounded " checked={checked} onChange={onChange} />
         </div>
     );
 };

@@ -9,6 +9,7 @@ import SubmitReport from "./pages/Submit Report/Submit Report.tsx";
 import Settings from "./pages/Settings/Settings.tsx";
 import Students from "./pages/Students/Students.tsx";
 import NewStudents from "./pages/Students/New Students/New Students.tsx";
+import AppRoutes from "./routes/AppRoutes.tsx";
 
 
 
@@ -20,7 +21,8 @@ function App() {
   return (
     <div className="body">
       <Navbar />
-     
+      <SignUp />
+      <AppRoutes />
     </div>
   )
 }
