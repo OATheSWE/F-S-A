@@ -8,6 +8,16 @@ body {
     overflow-y: scroll
 }
 
+.transition-fade {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+  
+.transition-fade.active {
+    opacity: 1;
+}
+  
+
 
 @import "./components/Navbar/Navbar.scss";
 @import "./components/Footer/Footer.scss";

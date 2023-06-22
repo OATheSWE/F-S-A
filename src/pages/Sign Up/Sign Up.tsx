@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import PrimaryLabel from '../../components/Primary Label/Primary Label';
 import { buttons, labels } from '../../assets/data';
 import RememberMe from '../../components/Remember Me/Remember Me';
@@ -37,9 +37,12 @@ const SignUp: React.FC = () => {
 
   const handleRememberMeChange = () => {
     setRememberMe(!rememberMe);
+  
+    // Set the rememberMe flag in localStorage
+    localStorage.setItem('RememberMe', !rememberMe ? 'true' : 'false');
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSignupSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     // Store user data in local storage
     localStorage.setItem('Username', username);
@@ -47,14 +50,10 @@ const SignUp: React.FC = () => {
     localStorage.setItem('Phone Number of Service Overseer', service);
     localStorage.setItem('Password', password);
 
-    if (rememberMe) {
-      localStorage.setItem('RememberMe', 'true');
-    } else {
-      localStorage.removeItem('RememberMe');
-    }
-
     // Navigate to the main page
-    navigate('/calender', { replace: true });
+    setTimeout(() => {
+      navigate('/calender', { replace: true });
+    }, 1000);
   };
 
   const isValidPhoneNumber = (phoneNumber: string) => {
@@ -66,7 +65,7 @@ const SignUp: React.FC = () => {
   return (
     <div className="whole-container">
       <div className="popup text-white rounded signup">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSignupSubmit}>
           <h2>Sign Up</h2>
           <PrimaryLabel
             text={labels.username}
@@ -99,9 +98,10 @@ const SignUp: React.FC = () => {
           {isValidNumber ? (
             <Button
               text={buttons.signup}
-              onClick={handleSubmit}
+              onClick={handleSignupSubmit}
             />
           ) : null}
+          <Link to="/">Already have an account?</Link>
         </form>
       </div>
       <Footer />

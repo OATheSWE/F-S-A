@@ -1,5 +1,15 @@
 .whole-container {
   .signup {
+    top: 5rem;
+
+
+    @media (min-width: 576px) and (max-width: 992px) {
+      margin: 0 2.5rem 3rem 2.5rem;
+    }
+
+    @media (min-width: 992px) {
+      margin: 0 4rem 0 4rem;
+    } margin: 0 1.8rem 3rem 1.8rem;
 
     form {
       h2 {
@@ -15,6 +25,13 @@
           top: 5px;
           left: 6.5rem;
         }
+      }
+
+      a {
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5rem;
+        color: $accent-color;
       }
     }
   }
