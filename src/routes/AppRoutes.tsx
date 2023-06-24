@@ -30,14 +30,13 @@ const AppRoutes: React.FC = () => {
 
   useEffect(() => {
     const RememberMe = localStorage.getItem('RememberMe');
+    const storedUsername = localStorage.getItem('Username');
+    const storedPhoneNumber = localStorage.getItem('PhoneNumber');
+    const storedPassword = localStorage.getItem('Password');
 
     // Check if "Remember Me" is set
     if (RememberMe === 'true') {
       // Check if the required credentials are stored
-      const storedUsername = localStorage.getItem('Username');
-      const storedPhoneNumber = localStorage.getItem('PhoneNumber');
-      const storedPassword = localStorage.getItem('Password');
-
       if (storedUsername || storedPhoneNumber && storedPassword) {
         // Credentials are present, continue to the desired page
         if (location.pathname !== '/calendar') {
@@ -49,10 +48,26 @@ const AppRoutes: React.FC = () => {
           navigate('/');
         }
       }
-    } 
+    }
 
-    
-  
+    if (location.pathname !== '/' && location.pathname !== '/signup') {
+      if (storedUsername || storedPhoneNumber && storedPassword) {
+        // Credentials are present, continue to the desired page
+        if (location.pathname !== '/calendar') {
+          navigate('/calendar');
+        }
+      } else {
+        // Required credentials are not stored, redirect to the login page
+        if (location.pathname !== '/') {
+          navigate('/');
+        }
+      }
+    }
+
+
+
+
+
   }, [navigate, location]);
 
 

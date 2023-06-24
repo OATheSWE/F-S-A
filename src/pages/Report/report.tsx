@@ -54,17 +54,7 @@ const Report: React.FC = () => {
         return days;
     };
 
-    useEffect(() => {
-        const RememberMe = localStorage.getItem('RememberMe');
     
-        // Check if "Remember Me" is set
-        if (RememberMe === 'false' || location.pathname === '/calendar' ) {
-           navigate('/');
-        } 
-    
-        
-      
-      }, [navigate, location]);
 
 
     return (
