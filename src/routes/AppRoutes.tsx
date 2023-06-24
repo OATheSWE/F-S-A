@@ -14,6 +14,7 @@ const AppRoutes: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
 
+
   // Get the current location
   const location = useLocation();
 
@@ -26,111 +27,132 @@ const AppRoutes: React.FC = () => {
     }, 300);
   }, [location]);
 
- // Check for Remember Me
-useEffect(() => {
-  const rememberMe = localStorage.getItem('RememberMe');
 
-  // Check if "Remember Me" is set
-  if (rememberMe === 'true' && location.pathname !== '/calender') {
-    navigate('/calender');
-  } 
-}, [navigate, location]);
+  useEffect(() => {
+    const RememberMe = localStorage.getItem('RememberMe');
 
+    // Check if "Remember Me" is set
+    if (RememberMe === 'true') {
+      // Check if the required credentials are stored
+      const storedUsername = localStorage.getItem('Username');
+      const storedPhoneNumber = localStorage.getItem('PhoneNumber');
+      const storedPassword = localStorage.getItem('Password');
+
+      if (storedUsername || storedPhoneNumber && storedPassword) {
+        // Credentials are present, continue to the desired page
+        if (location.pathname !== '/calendar') {
+          navigate('/calendar');
+        }
+      } else {
+        // Required credentials are not stored, redirect to the login page
+        if (location.pathname !== '/') {
+          navigate('/');
+        }
+      }
+    } 
+
+    
   
+  }, [navigate, location]);
 
 
-useEffect(() => {
-  // Disable history navigation when on the calendar page
-  if (location.pathname === '/calender') {
-    window.history.pushState(null, '', window.location.href);
-    window.onpopstate = () => {
-      window.history.go(1);
-    };
-  }
-}, [location]);
 
-return (
-  <Routes>
-    <Route
-      path="/"
-      element={
-        <div className={`transition-fade ${activeRoute === '/' ? 'active' : ''}`}>
-          <LogIn />
-        </div>
-      }
-    />
-    <Route
-      path="/calender"
-      element={
-        <div className={`transition-fade ${activeRoute.includes('/calender') ? 'active' : ''}`}>
-          <div style={{ opacity: isTransitioning ? 0 : 1 }}>
-            <Report />
+
+
+  useEffect(() => {
+    // Disable history navigation when on the calendar page
+    if (location.pathname === '/calendar') {
+      window.history.pushState(null, '', window.location.href);
+      window.onpopstate = () => {
+        window.history.go(1);
+      };
+    }
+  }, [location]);
+
+
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <div className={`transition-fade ${activeRoute === '/' ? 'active' : ''}`}>
+            <LogIn />
           </div>
-        </div>
-      }
-    />
-    <Route
-      path="/calender/record-report"
-      element={
-        <div className={`transition-fade ${activeRoute.includes('/calender/record-report') ? 'active' : ''}`}>
-          <div style={{ opacity: isTransitioning ? 0 : 1 }}>
-            <PopupRecorder />
+        }
+      />
+      <Route
+        path="/calendar"
+        element={
+          <div className={`transition-fade ${activeRoute.includes('/calendar') ? 'active' : ''}`}>
+            <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+              <Report />
+            </div>
           </div>
-        </div>
-      }
-    />
-    <Route
-      path="/submit-report"
-      element={
-        <div className={`transition-fade ${activeRoute.includes('/submit-report') ? 'active' : ''}`}>
-          <div style={{ opacity: isTransitioning ? 0 : 1 }}>
-            <SubmitReport />
+        }
+      />
+      <Route
+        path="/calendar/record-report"
+        element={
+          <div className={`transition-fade ${activeRoute.includes('/calendar/record-report') ? 'active' : ''}`}>
+            <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+              <PopupRecorder />
+            </div>
           </div>
-        </div>
-      }
-    />
-    <Route
-      path="/students"
-      element={
-        <div className={`transition-fade ${activeRoute.includes('/students') ? 'active' : ''}`}>
-          <div style={{ opacity: isTransitioning ? 0 : 1 }}>
-            <Students />
+        }
+      />
+      <Route
+        path="/submit-report"
+        element={
+          <div className={`transition-fade ${activeRoute.includes('/submit-report') ? 'active' : ''}`}>
+            <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+              <SubmitReport />
+            </div>
           </div>
-        </div>
-      }
-    />
-    <Route
-      path="/students/new-student"
-      element={
-        <div className={`transition-fade ${activeRoute.includes('/students/new-student') ? 'active' : ''}`}>
-          <div style={{ opacity: isTransitioning ? 0 : 1 }}>
-            <NewStudents />
+        }
+      />
+      <Route
+        path="/students"
+        element={
+          <div className={`transition-fade ${activeRoute.includes('/students') ? 'active' : ''}`}>
+            <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+              <Students />
+            </div>
           </div>
-        </div>
-      }
-    />
-    <Route
-      path="/settings"
-      element={
-        <div className={`transition-fade ${activeRoute.includes('/settings') ? 'active' : ''}`}>
-          <div style={{ opacity: isTransitioning ? 0 : 1 }}>
-            <Settings />
+        }
+      />
+      <Route
+        path="/students/new-student"
+        element={
+          <div className={`transition-fade ${activeRoute.includes('/students/new-student') ? 'active' : ''}`}>
+            <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+              <NewStudents />
+            </div>
           </div>
-        </div>
-      }
-    />
-    <Route
-      path="/signup"
-      element={
-        <div className={`transition-fade ${activeRoute.includes('/signup') ? 'active' : ''}`}>
-          <div style={{ opacity: isTransitioning ? 0 : 1 }}>
-            <SignUp />
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <div className={`transition-fade ${activeRoute.includes('/settings') ? 'active' : ''}`}>
+            <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+              <Settings />
+            </div>
           </div>
-        </div>
-      }
-    />
-  </Routes>
-);
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <div className={`transition-fade ${activeRoute.includes('/signup') ? 'active' : ''}`}>
+            <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+              <SignUp />
+            </div>
+          </div>
+        }
+      />
+    </Routes>
+  );
 };
 
 export default AppRoutes;

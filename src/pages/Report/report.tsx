@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaAngleLeft, FaAngleRight } from '../../assets/IconImports';
-import PopupRecorder from './Record Report/Popup Recorder';
 import Footer from '../../components/Footer/Footer';
+import Navbar from '../../components/Navbar/Navbar';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Report: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [showPopup, setShowPopup] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const handleReportRecorder = () => {
-        setShowPopup(!showPopup);
-    };
 
     const handlePrevMonth = () => {
         setCurrentDate((prevDate) => {
@@ -55,34 +54,49 @@ const Report: React.FC = () => {
         return days;
     };
 
+    useEffect(() => {
+        const RememberMe = localStorage.getItem('RememberMe');
+    
+        // Check if "Remember Me" is set
+        if (RememberMe === 'false' || location.pathname === '/calendar' ) {
+           navigate('/');
+        } 
+    
+        
+      
+      }, [navigate, location]);
+
 
     return (
-        <div className="report text-white">
-            <div className="calendar">
-                <div className="calendar-header d-flex rounded">
-                    <div onClick={handlePrevMonth} className="preview-icon rounded-circle">
-                        <FaAngleLeft className="icon-profile" />
+        <>
+            <Navbar />
+            <div className="report text-white">
+                <div className="calendar">
+                    <div className="calendar-header d-flex rounded">
+                        <div onClick={handlePrevMonth} className="preview-icon rounded-circle">
+                            <FaAngleLeft className="icon-profile" />
+                        </div>
+                        <span>{currentDate.toLocaleString('default', { month: 'short', year: 'numeric' })}</span>
+                        <div onClick={handleNextMonth} className="preview-icon rounded-circle">
+                            <FaAngleRight className="icon-profile" />
+                        </div>
                     </div>
-                    <span>{currentDate.toLocaleString('default', { month: 'short', year: 'numeric' })}</span>
-                    <div onClick={handleNextMonth} className="preview-icon rounded-circle">
-                        <FaAngleRight className="icon-profile" />
+                    <div className="calendar-body">
+                        <div className="calendar-weekdays">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                        </div>
+                        <div className="calendar-days">{renderCalendarDays()}</div>
                     </div>
                 </div>
-                <div className="calendar-body">
-                    <div className="calendar-weekdays">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div className="calendar-days">{renderCalendarDays()}</div>
-                </div>
+                <Footer />
             </div>
-            <Footer />
-        </div>
+        </>
     );
 };
 

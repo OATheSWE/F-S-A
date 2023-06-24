@@ -11,7 +11,8 @@ const LogIn: React.FC = () => {
   const [userOrPhone, setUserOrPhone] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleUserOrPhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserOrPhone(event.target.value);
@@ -25,33 +26,36 @@ const LogIn: React.FC = () => {
     setRememberMe(!rememberMe);
   
     // Set the rememberMe flag in localStorage
-    localStorage.setItem('RememberMe', !rememberMe ? 'true' : 'false');
+    localStorage.setItem('Remember Me', !rememberMe ? 'true' : 'false');
   };
 
- const handleLoginSubmit = (event: React.FormEvent) => {
-  event.preventDefault();
+  const handleLoginSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+  
+    // Retrieve user data from local storage
+    const storedUsername = localStorage.getItem('Username');
+    const storedPhoneNumber = localStorage.getItem('PhoneNumber');
+    const storedPassword = localStorage.getItem('Password');
+  
+    // Check if the entered userOrPhone and password match the stored data
+    if (
+      (userOrPhone === storedUsername || userOrPhone === storedPhoneNumber) &&
+      password === storedPassword
+    ) {
+      setError('');
+      setSuccess('Login Successful');
+      
+      // Login successful, Navigate to the calendar page
+      setTimeout(() => {
+        navigate('/calendar', { replace: true });
+      }, 1500);
+    } else {
+      // Login failed, show an error message
+      setError('Invalid login credentials');
+      setSuccess('');
+    }
 
-  // Retrieve user data from local storage
-  const storedUsername = localStorage.getItem('Username');
-  const storedPhoneNumber = localStorage.getItem('PhoneNumber');
-  const storedPassword = localStorage.getItem('Password');
-
-  // Check if the entered userOrPhone and password match the stored data
-  if (
-    (userOrPhone === storedUsername || userOrPhone === storedPhoneNumber) &&
-    password === storedPassword
-  ) {
-
-    // Login successful, Navigate to the calendar page
-    setTimeout(() => {
-      navigate('/calender', { replace: true });
-    }, 1000);
-  } else {
-    // Login failed, show an error message
-    setErrorMessage('Invalid login credentials');
-  }
-};
-
+  };
 
   return (
     <div className="whole-container">
@@ -63,18 +67,21 @@ const LogIn: React.FC = () => {
             inputType="text"
             value={userOrPhone}
             onChange={handleUserOrPhoneChange}
+            placeholder="Eg chioma12 or 09022345715"
           />
           <PrimaryLabel
             text={labels.password}
             inputType="password"
             value={password}
             onChange={handlePasswordChange}
+            placeholder="Eg 22224e"
           />
           <RememberMe
             checked={rememberMe}
             onChange={handleRememberMeChange}
           />
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          {success && <p className="success-message">{success}</p>}
+          {error && <p className="error-message" >{error}</p>}
           <Button text={buttons.login} onClick={handleLoginSubmit} />
           <Link to="/signup">Don't have an account yet?</Link>
         </form>
