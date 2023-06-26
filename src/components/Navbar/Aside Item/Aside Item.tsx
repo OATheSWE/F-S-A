@@ -1,4 +1,5 @@
 import React, { CSSProperties, ReactElement } from 'react';
+import { Link } from 'react-router-dom';
 
 interface AsideItemProps {
   link: string;
@@ -11,11 +12,11 @@ interface AsideItemProps {
 
 const AsideItem: React.FC<AsideItemProps> = ({ link, anchor, div, icon, spanStyle, span }) => {
   return (
-    <a href={link} className={anchor}>
+    <Link to={link} className={anchor}>
       {div && <div className={div}>{icon}</div>}
       {!div && icon} {/* Display the icon directly if no div is provided */}
       <span style={spanStyle}>{span}</span>
-    </a>
+    </Link>
   );
 };
 

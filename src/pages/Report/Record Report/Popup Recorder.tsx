@@ -4,6 +4,7 @@ import PrimaryLabel from '../../../components/Primary Label/Primary Label';
 import SecondaryLabel from '../../../components/Secondary Label/Secondary Label';
 import Button from '../../../components/Button/Button';
 import Footer from '../../../components/Footer/Footer';
+import Navbar from '../../../components/Navbar/Navbar';
 
 
 const PopupRecorder: React.FC = () => {
@@ -11,6 +12,7 @@ const PopupRecorder: React.FC = () => {
 
   return (
     <div className="whole-container">
+      <Navbar />
       <div className="popup text-white rounded">
         <form>
           <h2>Activity Form</h2>

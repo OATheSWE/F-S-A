@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TbReport, SlPeople, BsSend, HiBars3BottomRight } from '../../../assets/IconImports';
 import AsideItem from '../Aside Item/Aside Item';
 import { classNames, navs } from '../../../assets/data';
+import { Link } from 'react-router-dom';
 
 const MobileAside: React.FC = () => {
   const [isAsideVisible, setAsideVisible] = useState(false);
@@ -32,7 +33,7 @@ const MobileAside: React.FC = () => {
               span={navs.report}
             />
             <AsideItem
-              link="#"
+              link="/students"
               anchor={classNames.mAsideAnchor}
               icon={<SlPeople className={classNames.mAsideAnchorIcon} />}
               span={navs.students}

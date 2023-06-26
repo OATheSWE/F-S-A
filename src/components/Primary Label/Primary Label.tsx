@@ -4,8 +4,8 @@ interface LabelProps {
   text: string;
   inputType?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string;
-  placeholder: string;
+  value?: string;
+  placeholder?: string;
 }
 
 const PrimaryLabel: React.FC<LabelProps> = ({ text, inputType, onChange, value, placeholder }) => {

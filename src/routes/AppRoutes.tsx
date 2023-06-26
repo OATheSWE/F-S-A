@@ -14,9 +14,11 @@ const AppRoutes: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
 
-
   // Get the current location
   const location = useLocation();
+
+  // Flag to track if user is coming from the login page
+  const isComingFromLogin = location.state?.fromLogin || false;
 
   // Update the active route when navigating
   useEffect(() => {
@@ -27,52 +29,46 @@ const AppRoutes: React.FC = () => {
     }, 300);
   }, [location]);
 
-
   useEffect(() => {
     const RememberMe = localStorage.getItem('RememberMe');
     const storedUsername = localStorage.getItem('Username');
     const storedPhoneNumber = localStorage.getItem('PhoneNumber');
     const storedPassword = localStorage.getItem('Password');
 
-    // Check if "Remember Me" is set
     if (RememberMe === 'true') {
-      // Check if the required credentials are stored
-      if (storedUsername || storedPhoneNumber && storedPassword) {
-        // Credentials are present, continue to the desired page
-        if (location.pathname !== '/calendar') {
-          navigate('/calendar');
+      if (storedUsername || (storedPhoneNumber && storedPassword)) {
+        const lastVisitedPage = localStorage.getItem('LastVisitedPage');
+        if (lastVisitedPage && lastVisitedPage !== '/' && lastVisitedPage !== '/signup') {
+          navigate(lastVisitedPage);
+        } else {
+          // Navigate to a default page when lastVisitedPage is not available or is the root/signup page
+          navigate('/calendar'); // Replace '/dashboard' with the desired default page
         }
       } else {
         // Required credentials are not stored, redirect to the login page
-        if (location.pathname !== '/') {
+        if (location.pathname !== '/' && location.pathname !== '/signup') {
           navigate('/');
         }
       }
+    } else if (RememberMe === 'false') {
+      // "Remember Me" is not set, redirect to the login page
+      if (!isComingFromLogin) {
+        if (location.pathname !== '/') {
+          navigate('/');
+        }
+      } 
     }
 
     if (location.pathname !== '/' && location.pathname !== '/signup') {
-      if (storedUsername || storedPhoneNumber && storedPassword) {
-        // Credentials are present, continue to the desired page
-        if (location.pathname !== '/calendar') {
-          navigate('/calendar');
-        }
-      } else {
+      // Check if the required credentials are stored
+      if (!storedUsername || (!storedPhoneNumber && !storedPassword)) {
         // Required credentials are not stored, redirect to the login page
         if (location.pathname !== '/') {
           navigate('/');
         }
       }
     }
-
-
-
-
-
-  }, [navigate, location]);
-
-
-
-
+  }, [navigate, location, isComingFromLogin]);
 
   useEffect(() => {
     // Disable history navigation when on the calendar page
@@ -84,7 +80,10 @@ const AppRoutes: React.FC = () => {
     }
   }, [location]);
 
-
+  useEffect(() => {
+    // Save the last visited page in local storage
+    localStorage.setItem('LastVisitedPage', location.pathname);
+  }, [location]);
 
   return (
     <Routes>
@@ -137,9 +136,9 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/students/new-student"
+        path="/students/new-students"
         element={
-          <div className={`transition-fade ${activeRoute.includes('/students/new-student') ? 'active' : ''}`}>
+          <div className={`transition-fade ${activeRoute.includes('/students/new-students') ? 'active' : ''}`}>
             <div style={{ opacity: isTransitioning ? 0 : 1 }}>
               <NewStudents />
             </div>

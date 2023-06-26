@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaAngleLeft, FaAngleRight } from '../../assets/IconImports';
 import Footer from '../../components/Footer/Footer';
 import Navbar from '../../components/Navbar/Navbar';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Report: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -54,6 +54,13 @@ const Report: React.FC = () => {
         return days;
     };
 
+    const linkTo = () => {
+        setTimeout(() => {
+            navigate('/calendar/record-report', { replace: true });
+          }, 1000);
+        return;
+    };
+
     
 
 
@@ -81,7 +88,7 @@ const Report: React.FC = () => {
                             <div>Fri</div>
                             <div>Sat</div>
                         </div>
-                        <div className="calendar-days">{renderCalendarDays()}</div>
+                        <div className="calendar-days" onClick={linkTo}>{renderCalendarDays()}</div>
                     </div>
                 </div>
                 <Footer />
