@@ -5,6 +5,7 @@ import StudentsList from './Students List/Students List';
 import Footer from '../../components/Footer/Footer';
 import Navbar from '../../components/Navbar/Navbar';
 
+
 const Students: React.FC = () => {
   const [studentName, setStudentName] = useState('');
   const navigate = useNavigate();
