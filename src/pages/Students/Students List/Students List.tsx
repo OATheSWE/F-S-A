@@ -6,6 +6,10 @@ import { FaMapMarkerAlt, MdDelete, MdModeEditOutline } from '../../../assets/Ico
 type Student = {
   name: string;
   bookOfStudy: string;
+  pinnedLocation: {
+    lat: number;
+    lng: number;
+  };
 };
 
 const StudentsList: React.FC = () => {
@@ -22,6 +26,7 @@ const StudentsList: React.FC = () => {
         return {
           name: data.name,
           bookOfStudy: data.bookOfStudy,
+          pinnedLocation: data.pinnedLocation,
         };
       });
 
@@ -31,6 +36,13 @@ const StudentsList: React.FC = () => {
     fetchStudents();
   }, []);
 
+  const handleTraceLocation = (lat: number, lng: number) => {
+    setTimeout(() => {
+      window.open(`https://www.google.com/maps/dir//${lat},${lng}`, '_blank');
+    }, 1500); 
+
+  };
+
   return (
     <div className="list-container">
       {students.map((student, index) => (
@@ -38,7 +50,7 @@ const StudentsList: React.FC = () => {
           <form>
             <h3>{student.name}</h3>
             <p>{student.bookOfStudy}</p>
-            <div>
+            <div onClick={() => handleTraceLocation(student.pinnedLocation.lat, student.pinnedLocation.lng)}>
               Trace Location
               <FaMapMarkerAlt className="icon-locate" />
             </div>
