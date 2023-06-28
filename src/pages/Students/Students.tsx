@@ -4,20 +4,49 @@ import { useNavigate } from 'react-router-dom';
 import StudentsList from './Students List/Students List';
 import Footer from '../../components/Footer/Footer';
 import Navbar from '../../components/Navbar/Navbar';
+import { db } from '../../firebase-config';
+import { collection, addDoc } from 'firebase/firestore';
+
 
 
 const Students: React.FC = () => {
   const [studentName, setStudentName] = useState('');
   const navigate = useNavigate();
+  const studentsCollectionRef = collection(db, 'Students');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStudentName(event.target.value);
   };
 
-  const handleAddStudent = (event: React.FormEvent) => {
+  const handleAddStudent = async (event: React.FormEvent) => {
     event.preventDefault();
-    navigate('/students/new-students');
+  
+    if (studentName) {
+      try {
+        const newStudent = {
+          name: studentName,
+          time: (new Date()).getTime()
+        };
+  
+        // Add the new student document to the Firestore collection
+        await addDoc(studentsCollectionRef, newStudent);
+  
+        // Reset the input field after successful addition
+        setStudentName('');
+  
+        // Optionally, show a success message to the user
+        console.log('Student added successfully!');
+
+        // Navigate to desired page
+        navigate('/students/new-students');
+      } catch (error) {
+        // Handle error if the student addition fails
+        console.error('Error adding student:', error);
+      }
+    }
   };
+  
+
 
   return (
     <div className="whole-container">

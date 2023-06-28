@@ -16,7 +16,8 @@ const labels = {
     tvideos: 'Total Videos:',
     tplacements: 'Total Placements:',
     treturnv: 'Total Return Visits:',
-    tbstudy: 'Total Bible Studies Conducted:'
+    tbstudy: 'Total Bible Studies Conducted:',
+    sName: 'Student Name:'
 };
 
 const navs = {
