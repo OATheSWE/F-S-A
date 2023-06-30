@@ -8,6 +8,7 @@ import Settings from '../pages/Settings/Settings.tsx';
 import Students from '../pages/Students/Students.tsx';
 import NewStudents from '../pages/Students/New Students/New Students.tsx';
 import SignUp from '../pages/Sign Up/Sign Up.tsx';
+import UpdateStudents from '../pages/Students/Students List/Update Students/Update Students.tsx';
 
 const AppRoutes: React.FC = () => {
   const [activeRoute, setActiveRoute] = useState('');
@@ -56,7 +57,7 @@ const AppRoutes: React.FC = () => {
         if (location.pathname !== '/') {
           navigate('/');
         }
-      } 
+      }
     }
 
     if (location.pathname !== '/' && location.pathname !== '/signup') {
@@ -146,6 +147,7 @@ const AppRoutes: React.FC = () => {
           </div>
         }
       />
+      <Route path="/students/update-students/:id" element={<UpdateStudents />} />
       <Route
         path="/settings"
         element={

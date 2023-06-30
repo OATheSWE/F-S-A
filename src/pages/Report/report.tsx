@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from '../../assets/IconImports';
 import Footer from '../../components/Footer/Footer';
 import Navbar from '../../components/Navbar/Navbar';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Report: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const navigate = useNavigate();
-    const location = useLocation();
 
 
     const handlePrevMonth = () => {

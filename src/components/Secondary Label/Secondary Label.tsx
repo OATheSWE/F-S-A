@@ -21,13 +21,15 @@ const SecondaryLabel: React.FC<LabelProps> = ({ text, array }) => {
         opacity: isMenuVisible ? '1' : '0',
     };
 
+    
+
 
     return (
         <label>
             {text}
             <div className="select rounded">
                 <div className="dropdown-toggle" onClick={handleMenu}>
-                    Open
+                    Open (6am-7pm)
                 </div>
                 <ul className="dropdown-menu" style={dropdownStyle}>
                     {array.map((time, index) => (

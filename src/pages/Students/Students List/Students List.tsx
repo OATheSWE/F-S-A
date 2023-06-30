@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../firebase-config';
-import { collection, query, orderBy, limit, getDocs, DocumentData } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { FaMapMarkerAlt, MdDelete, MdModeEditOutline } from '../../../assets/IconImports';
+import { useNavigate } from 'react-router-dom';
 
 type Student = {
+  id: string;
   name: string;
   bookOfStudy: string;
   pinnedLocation: {
@@ -14,6 +16,7 @@ type Student = {
 
 const StudentsList: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -24,6 +27,7 @@ const StudentsList: React.FC = () => {
       const studentData = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
+          id: doc.id,
           name: data.name,
           bookOfStudy: data.bookOfStudy,
           pinnedLocation: data.pinnedLocation,
@@ -43,6 +47,20 @@ const StudentsList: React.FC = () => {
 
   };
 
+  const deleteStudent = async (studentId: string) => {
+    try {
+      const studentRef = doc(db, 'Students', studentId);
+      await deleteDoc(studentRef);
+      setStudents((prevStudents) => prevStudents.filter((student) => student.id !== studentId));
+    } catch (error) {
+      console.error('Error deleting student:', error);
+    }
+  };
+
+  const editStudent = (id: string) => {
+    navigate(`/students/update-students/${id}`);
+  };
+
   return (
     <div className="list-container">
       {students.map((student, index) => (
@@ -54,8 +72,8 @@ const StudentsList: React.FC = () => {
               Trace Location
               <FaMapMarkerAlt className="icon-locate" />
             </div>
-            <MdDelete className="icon-delete" />
-            <MdModeEditOutline className="icon-edit" />
+            <MdDelete className="icon-delete" onClick={() => deleteStudent(student.id)} />
+            <MdModeEditOutline className="icon-edit" onClick={() => editStudent(student.id)}/>
           </form>
         </div>
       ))}

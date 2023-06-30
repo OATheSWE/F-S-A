@@ -6,7 +6,7 @@ import Button from '../../../components/Button/Button';
 import Footer from '../../../components/Footer/Footer';
 import Navbar from '../../../components/Navbar/Navbar';
 import { db } from '../../../firebase-config'; // Make sure to import the Firebase configuration
-import { collection, getDocs, query, orderBy, limit, updateDoc } from 'firebase/firestore'; // Import Firestore functionalities
+import { collection, getDocs, query, orderBy, limit, updateDoc,  } from 'firebase/firestore'; // Import Firestore functionalities
 
 import { useNavigate } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ const NewStudents: React.FC = () => {
     useEffect(() => {
         const getLatestName = async () => {
             const studentsCollectionRef = collection(db, 'Students');
-            const studentsQuery = query(studentsCollectionRef, orderBy('time', 'desc'), limit(1));
+            const studentsQuery = query(studentsCollectionRef, orderBy('time', 'desc'), limit(1)); 
             const querySnapshot = await getDocs(studentsQuery);
 
             if (!querySnapshot.empty) {
