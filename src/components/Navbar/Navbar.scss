@@ -5,7 +5,7 @@
   padding: 0.3rem 0.5rem 0.3rem 0.5rem;
   position: fixed;
   width: 100vw;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: -9px 2px 4px 0 rgba(255, 255, 255, 0.1);
   
 
@@ -251,6 +251,7 @@
     // Side Navigation
 
     aside {
+
       .mobile-aside {
         background: #191c24;
         overflow: hidden;

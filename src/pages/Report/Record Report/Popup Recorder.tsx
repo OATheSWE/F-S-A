@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { labels, buttons, times, students } from '../../../assets/data';
+import { labels, buttons, times } from '../../../assets/data';
 import PrimaryLabel from '../../../components/Primary Label/Primary Label';
 import SecondaryLabel from '../../../components/Secondary Label/Secondary Label';
 import Button from '../../../components/Button/Button';
@@ -9,12 +9,22 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../../firebase-config';
 import { useNavigate } from 'react-router-dom';
 
-
 const PopupRecorder: React.FC = () => {
   const reportsCollectionRef = collection(db, 'Reports');
   const [videoCount, setVideoCount] = useState('');
   const [placements, setPlacements] = useState('');
+  const [selectedStart, setSelectedStart] = useState('Open (6am - 7pm)');
+  const [selectedStop, setSelectedStop] = useState('Open (6am - 7pm)');
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  const handleStartSelection = (value: string) => {
+    setSelectedStart(value);
+  };
+
+  const handleStopSelection = (value: string) => {
+    setSelectedStop(value);
+  };
 
   const handleVideoCount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoCount(event.target.value);
@@ -24,50 +34,79 @@ const PopupRecorder: React.FC = () => {
     setPlacements(event.target.value);
   };
 
+  const handleStudentSelection = (selectedValues: string[]) => {
+    setSelectedStudents(selectedValues);
+  };
+
   const handleRecordReport = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    
-    if (videoCount && placements) {
+    if (videoCount && placements && selectedStudents.length > 0) {
       try {
         const newReport = {
           videos: videoCount,
           placements: placements,
-          date: (new Date()).getTime()
+          students: selectedStudents,
         };
-  
-        // Add the new student document to the Firestore collection
+
+        // Add the new report document to the Firestore collection
         await addDoc(reportsCollectionRef, newReport);
-  
-        // Reset the input field after successful addition
+
+        // Reset the input fields after successful addition
         setVideoCount('');
         setPlacements('');
-  
-        // Optionally, show a success message to the user
-        console.log('Student added successfully!');
+        setSelectedStudents([]);
 
-        // Navigate to desired page
+        // Optionally, show a success message to the user
+        console.log('Report added successfully!');
+
+        // Navigate to the desired page
         navigate('/calendar');
       } catch (error) {
-        // Handle error if the student addition fails
-        console.error('Error adding student:', error);
+        // Handle error if the report addition fails
+        console.error('Error adding report:', error);
       }
     }
   };
-
-
 
   return (
     <div className="whole-container">
       <Navbar />
       <div className="popup text-white rounded">
-        <form onSubmit={handleRecordReport} >
+        <form onSubmit={handleRecordReport}>
           <h2>Activity Form</h2>
-          <SecondaryLabel text={labels.starth} array={times} />
-          <SecondaryLabel text={labels.stoph} array={times} />
-          <PrimaryLabel text={labels.video} inputType='number' value={videoCount} onChange={handleVideoCount} />
-          <PrimaryLabel text={labels.placement} inputType='number' value={placements} onChange={handlePlacements} />
-          <SecondaryLabel text={labels.selecteds} array={students} />
+          <SecondaryLabel
+            text={labels.starth}
+            array={times}
+            onClick={handleStartSelection}
+            value={selectedStart}
+          />
+          <SecondaryLabel
+            text={labels.stoph}
+            array={times}
+            onClick={handleStopSelection}
+            value={selectedStop}
+          />
+          <PrimaryLabel
+            text={labels.video}
+            inputType="number"
+            value={videoCount}
+            onChange={handleVideoCount}
+          />
+          <PrimaryLabel
+            text={labels.placement}
+            inputType="number"
+            value={placements}
+            onChange={handlePlacements}
+          />
+          <SecondaryLabel
+            text={labels.selecteds}
+            array={[]}
+            onChange={handleStudentSelection}
+            selectedValues={selectedStudents}
+            onSelectMultiple={setSelectedStudents}
+            value={selectedStudents.length > 0 ? selectedStudents.join(', ') : 'Open Students'}
+          />
           <Button text={buttons.save} />
         </form>
       </div>
@@ -77,5 +116,3 @@ const PopupRecorder: React.FC = () => {
 };
 
 export default PopupRecorder;
-
-

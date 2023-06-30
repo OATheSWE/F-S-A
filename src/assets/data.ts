@@ -54,13 +54,6 @@ const times = [
     '19:00'
 ];
 
-const students = [
-    'John Doe',
-    'Billy Bob',
-    'Osborne Molen',
-    'Hope Mikaelson'
-];
-
 const classNames = {
     dAsideAnchor: 'd-flex',
     mAsideAnchor: 'd-flex flex-column align-items-center text-decoration-none link text-white',
@@ -85,5 +78,5 @@ const notifications = {
 
 
   
-export { labels, navs, buttons, times, students, classNames, notifications  };
+export { labels, navs, buttons, times, classNames, notifications  };
   

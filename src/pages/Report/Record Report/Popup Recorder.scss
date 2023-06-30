@@ -60,6 +60,7 @@
             box-shadow: inset -2px 3px 8px 0 rgba(255, 255, 255, 0.1);
             height: 125px;
             overflow-y: scroll;
+            z-index: 10;
 
             li {
               padding: 8px 15px;
