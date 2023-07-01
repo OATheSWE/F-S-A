@@ -5,25 +5,37 @@ import SecondaryLabel from '../../../components/Secondary Label/Secondary Label'
 import Button from '../../../components/Button/Button';
 import Footer from '../../../components/Footer/Footer';
 import Navbar from '../../../components/Navbar/Navbar';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../../firebase-config';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+
 
 const PopupRecorder: React.FC = () => {
-  const reportsCollectionRef = collection(db, 'Reports');
   const [videoCount, setVideoCount] = useState('');
   const [placements, setPlacements] = useState('');
   const [selectedStart, setSelectedStart] = useState('Open (6am - 7pm)');
   const [selectedStop, setSelectedStop] = useState('Open (6am - 7pm)');
+  const [selectedStartHour, setSelectedStartHour] = useState<number>(0);
+  const [selectedStopHour, setSelectedStopHour] = useState<number>(0);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const navigate = useNavigate();
 
+  const convertTimeToHours = (time: string): number => {
+    const [hour, minute] = time.split(':').map(Number);
+    return hour + minute / 60;
+  };
+
   const handleStartSelection = (value: string) => {
     setSelectedStart(value);
+    const startHour = convertTimeToHours(value);
+    setSelectedStartHour(startHour);
   };
 
   const handleStopSelection = (value: string) => {
     setSelectedStop(value);
+    const stopHour = convertTimeToHours(value);
+    setSelectedStopHour(stopHour);
   };
 
   const handleVideoCount = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,18 +53,30 @@ const PopupRecorder: React.FC = () => {
   const handleRecordReport = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (videoCount && placements && selectedStudents.length > 0) {
+    const hours = selectedStopHour - selectedStartHour;
+
+    if (videoCount && placements && selectedStudents.length > 0 && hours) {
       try {
+
         const newReport = {
+          hours: hours,
           videos: videoCount,
           placements: placements,
           students: selectedStudents,
-        };
+        }
+        
+        const reportsCollectionRef = collection(db, 'Reports');
+        const newReportDocRef = doc(reportsCollectionRef, 'June 2023');
 
-        // Add the new report document to the Firestore collection
-        await addDoc(reportsCollectionRef, newReport);
+        await setDoc(newReportDocRef, {
+          june: arrayUnion(newReport)
+        });
+        
+
 
         // Reset the input fields after successful addition
+        setSelectedStart('Open (6am - 7pm)');
+        setSelectedStop('Open (6am - 7pm)');
         setVideoCount('');
         setPlacements('');
         setSelectedStudents([]);
@@ -68,6 +92,11 @@ const PopupRecorder: React.FC = () => {
       }
     }
   };
+
+
+
+
+
 
   return (
     <div className="whole-container">

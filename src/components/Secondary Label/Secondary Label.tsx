@@ -91,9 +91,7 @@ const SecondaryLabel: React.FC<LabelProps> = ({ text, array, onClick, value, onS
                 {array &&
             array.map((time, index) => (
               <li
-                className={`dropdown-item rounded ${
-                  selectedStudents.includes(time) ? 'selected' : ''
-                }`}
+                className={'dropdown-item rounded'}
                 key={index}
                 onClick={() => {
                   onClick?.(time);
