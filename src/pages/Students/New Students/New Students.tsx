@@ -54,7 +54,7 @@ const NewStudents: React.FC = () => {
     const handleAddStudent = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (latestName && latestBook && pinLocation) {
+        if (latestName || latestBook || pinLocation) {
             try {
                 const newStudent = {
                     name: latestName,

@@ -42,7 +42,7 @@ const StudentsList: React.FC = () => {
 
   const handleTraceLocation = (lat: number, lng: number) => {
     setTimeout(() => {
-      window.open(`https://www.google.com/maps/dir//${lat},${lng}`, '_blank');
+      window.open(`https://maps.google.com/?q=${lat},${lng}`, '_blank');
     }, 1500); 
 
   };

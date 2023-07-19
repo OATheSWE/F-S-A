@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { labels, buttons, times } from '../../../assets/data';
+import { labels, buttons, times, monthNames } from '../../../assets/data';
 import PrimaryLabel from '../../../components/Primary Label/Primary Label';
 import SecondaryLabel from '../../../components/Secondary Label/Secondary Label';
 import Button from '../../../components/Button/Button';
 import Footer from '../../../components/Footer/Footer';
 import Navbar from '../../../components/Navbar/Navbar';
-import { collection, addDoc, doc, setDoc, arrayUnion } from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc, arrayUnion, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase-config';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -52,38 +52,57 @@ const PopupRecorder: React.FC = () => {
 
   const handleRecordReport = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     const hours = selectedStopHour - selectedStartHour;
-
-    if (videoCount && placements && selectedStudents.length > 0 && hours) {
+  
+    if (hours || videoCount || placements || selectedStudents.length > 0 ) {
       try {
-
         const newReport = {
           hours: hours,
           videos: videoCount,
           placements: placements,
           students: selectedStudents,
-        }
+        };
+  
+        const currentDate = new Date();
+        const month = currentDate.getMonth(); 
+        const year = currentDate.getFullYear();
+        const currentMonth = monthNames[month];
+        const currentDay = currentDate.getDate();
         
         const reportsCollectionRef = collection(db, 'Reports');
-        const newReportDocRef = doc(reportsCollectionRef, 'June 2023');
-
-        await setDoc(newReportDocRef, {
-          june: arrayUnion(newReport)
-        });
-        
-
-
+        const newReportDocRef = doc(reportsCollectionRef, `${currentMonth} ${year}`);
+        const reportDay = `${currentMonth} ${currentDay}`;
+  
+        const newReportDocSnapshot = await getDoc(newReportDocRef);
+  
+        if (!newReportDocSnapshot.exists()) {
+          // Create the month-year document if it doesn't exist
+          await setDoc(newReportDocRef, {});
+        }
+  
+        // Get the existing report object inside the main object
+        const existingReports = newReportDocSnapshot.data();
+  
+        // Create a new object inside the main object with the report for the current day
+        const updatedReports = {
+          ...existingReports,
+          [reportDay]: newReport,
+        };
+  
+        // Update the month-year document with the updated reports object
+        await setDoc(newReportDocRef, updatedReports);
+  
         // Reset the input fields after successful addition
         setSelectedStart('Open (6am - 7pm)');
         setSelectedStop('Open (6am - 7pm)');
         setVideoCount('');
         setPlacements('');
         setSelectedStudents([]);
-
+  
         // Optionally, show a success message to the user
         console.log('Report added successfully!');
-
+  
         // Navigate to the desired page
         navigate('/calendar');
       } catch (error) {
@@ -92,9 +111,6 @@ const PopupRecorder: React.FC = () => {
       }
     }
   };
-
-
-
 
 
 

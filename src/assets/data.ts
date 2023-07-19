@@ -74,9 +74,14 @@ const notifications = {
     students: "You haven't studied with john in a while",
 }
 
+const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
+
 
 
 
   
-export { labels, navs, buttons, times, classNames, notifications  };
+export { labels, navs, buttons, times, classNames, notifications, monthNames  };
   
