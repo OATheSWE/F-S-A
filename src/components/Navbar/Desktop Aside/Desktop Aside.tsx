@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { TbReport, SlPeople, BsSend, HiBars3BottomLeft, ImExit } from '../../../assets/IconImports';
+import { IconImports } from '../../../assets';
 import AsideItem from '../Aside Item/Aside Item';
-import { classNames, navs } from '../../../assets/data';
+import { classNames, navs } from '../../../Data/data';
 
 const DesktopAside: React.FC = () => {
 
@@ -25,39 +25,39 @@ const DesktopAside: React.FC = () => {
         /* Sidebar Button & DesktopSidebar */
         <div className="nav-sidebar">
             <button className="navbar-toggler" type="button" onClick={expandSidebar}>
-                <HiBars3BottomLeft className="icon-bars" id="bars1" />
+                <IconImports.HiBars3BottomLeft className="icon-bars" id="bars1" />
             </button>
             <aside>
                 <div className="desktop-aside" style={asideStyle2}>
                     <AsideItem 
-                    link="#" 
+                    link="/" 
                     anchor={classNames.dAsideAnchor} 
                     div={classNames.dAsideAnchorDiv} 
-                    icon={<TbReport className={`classNames.dAsideAnchorDivIcon text-success`} />}
+                    icon={<IconImports.TbReport className={`classNames.dAsideAnchorDivIcon text-success`} />}
                     spanStyle={asideStyle3}
                     span={navs.report}
                     />
                     <AsideItem 
-                    link="#" 
+                    link="/students" 
                     anchor={classNames.dAsideAnchor} 
                     div={classNames.dAsideAnchorDiv} 
-                    icon={<SlPeople className={`classNames.dAsideAnchorDivIcon text-warning`} />}
+                    icon={<IconImports.SlPeople className={`classNames.dAsideAnchorDivIcon text-warning`} />}
                     spanStyle={asideStyle3}
                     span={navs.students}
                     />
                     <AsideItem 
-                    link="#" 
+                    link="/login" 
                     anchor={classNames.dAsideAnchor} 
                     div={classNames.dAsideAnchorDiv} 
-                    icon={<ImExit className={`classNames.dAsideAnchorDivIcon text-danger`} />}
+                    icon={<IconImports.ImExit className={`classNames.dAsideAnchorDivIcon text-danger`} />}
                     spanStyle={asideStyle3}
                     span={navs.logout}
                     />
                     <AsideItem 
-                    link="#" 
+                    link="/submit-report" 
                     anchor={classNames.dAsideAnchor} 
                     div={classNames.dAsideAnchorDiv} 
-                    icon={<BsSend className={classNames.dAsideAnchorDivIcon} />}
+                    icon={<IconImports.BsSend className={classNames.dAsideAnchorDivIcon} />}
                     spanStyle={asideStyle3}
                     span={navs.submit}
                     />

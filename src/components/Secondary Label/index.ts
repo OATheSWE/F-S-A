@@ -1,0 +1,1 @@
+export { default as SecondaryLabel } from "./Secondary Label";

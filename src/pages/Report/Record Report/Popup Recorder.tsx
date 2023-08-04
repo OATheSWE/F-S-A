@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
-import { labels, buttons, times, monthNames } from '../../../assets/data';
-import PrimaryLabel from '../../../components/Primary Label/Primary Label';
-import SecondaryLabel from '../../../components/Secondary Label/Secondary Label';
-import Button from '../../../components/Button/Button';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
-import { collection, addDoc, doc, setDoc, arrayUnion, getDoc, updateDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { labels, buttons, times, monthNames } from '../../../Data/data';
+import { PrimaryLabel, Button, SecondaryLabel } from '../../../components';
+import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase-config';
-import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
 const PopupRecorder: React.FC = () => {
@@ -19,7 +14,20 @@ const PopupRecorder: React.FC = () => {
   const [selectedStartHour, setSelectedStartHour] = useState<number>(0);
   const [selectedStopHour, setSelectedStopHour] = useState<number>(0);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [day, setDay] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Parse the query parameters from the location object
+    const queryParams = new URLSearchParams(location.search);
+    const dayParam = queryParams.get('day');
+
+    // Update the "day" state with the query parameter value
+    setDay(dayParam || ''); // If dayParam is null or undefined, set it to an empty string
+  }, [location.search]);
+
+
 
   const convertTimeToHours = (time: string): number => {
     const [hour, minute] = time.split(':').map(Number);
@@ -52,62 +60,63 @@ const PopupRecorder: React.FC = () => {
 
   const handleRecordReport = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     const hours = selectedStopHour - selectedStartHour;
-  
-    if (hours || videoCount || placements || selectedStudents.length > 0 ) {
+
+    if (hours || videoCount || placements || selectedStudents.length > 0) {
+
+      const currentDate = new Date();
+      const month = currentDate.getMonth();
+      const year = currentDate.getFullYear();
+      const currentMonth = monthNames[month];
+
       try {
         const newReport = {
           hours: hours,
-          videos: videoCount,
-          placements: placements,
+          videos: parseInt(videoCount, 10),
+          placements:parseInt(placements, 10),
           students: selectedStudents,
         };
-  
-        const currentDate = new Date();
-        const month = currentDate.getMonth(); 
-        const year = currentDate.getFullYear();
-        const currentMonth = monthNames[month];
-        const currentDay = currentDate.getDate();
-        
+
         const reportsCollectionRef = collection(db, 'Reports');
         const newReportDocRef = doc(reportsCollectionRef, `${currentMonth} ${year}`);
-        const reportDay = `${currentMonth} ${currentDay}`;
-  
+        const reportDay = `${currentMonth} ${day} ${year}`;
+
         const newReportDocSnapshot = await getDoc(newReportDocRef);
-  
+
         if (!newReportDocSnapshot.exists()) {
           // Create the month-year document if it doesn't exist
           await setDoc(newReportDocRef, {});
         }
-  
+
         // Get the existing report object inside the main object
         const existingReports = newReportDocSnapshot.data();
-  
+
         // Create a new object inside the main object with the report for the current day
         const updatedReports = {
           ...existingReports,
           [reportDay]: newReport,
         };
-  
+
         // Update the month-year document with the updated reports object
         await setDoc(newReportDocRef, updatedReports);
-  
+
         // Reset the input fields after successful addition
         setSelectedStart('Open (6am - 7pm)');
         setSelectedStop('Open (6am - 7pm)');
         setVideoCount('');
         setPlacements('');
         setSelectedStudents([]);
-  
+
         // Optionally, show a success message to the user
-        console.log('Report added successfully!');
-  
+        alert('Report added successfully!');
+
         // Navigate to the desired page
-        navigate('/calendar');
+        navigate('/');
       } catch (error) {
         // Handle error if the report addition fails
         console.error('Error adding report:', error);
+        alert('Could Not Add The Report!');
       }
     }
   };
@@ -116,7 +125,6 @@ const PopupRecorder: React.FC = () => {
 
   return (
     <div className="whole-container">
-      <Navbar />
       <div className="popup text-white rounded">
         <form onSubmit={handleRecordReport}>
           <h2>Activity Form</h2>
@@ -155,7 +163,6 @@ const PopupRecorder: React.FC = () => {
           <Button text={buttons.save} />
         </form>
       </div>
-      <Footer />
     </div>
   );
 };

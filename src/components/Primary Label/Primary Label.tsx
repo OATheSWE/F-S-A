@@ -4,15 +4,16 @@ interface LabelProps {
   text: string;
   inputType?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  value?: string;
+  value?: string | number;
   placeholder?: string;
+  readOnly?: boolean;
 }
 
-const PrimaryLabel: React.FC<LabelProps> = ({ text, inputType, onChange, value, placeholder }) => {
+const PrimaryLabel: React.FC<LabelProps> = ({ text, inputType, onChange, value, placeholder, readOnly }) => {
   return (
     <label>
       {text}
-      {inputType && <input type={inputType} className="rounded" value={value} onChange={onChange} placeholder={placeholder} />}
+      {inputType && <input type={inputType} className="rounded" value={value}  onChange={onChange} placeholder={placeholder} readOnly={readOnly} />}
     </label>
   );
 }; 

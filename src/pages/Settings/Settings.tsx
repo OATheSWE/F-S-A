@@ -1,9 +1,7 @@
 import React from 'react';
-import Avatar from '../../assets/avatar.png'
-import Footer from '../../components/Footer/Footer';
-import PrimaryLabel from '../../components/Primary Label/Primary Label';
-import { buttons, labels } from '../../assets/data';
-import Button from '../../components/Button/Button';
+import { ImageCollection } from '../../assets';
+import { PrimaryLabel, Button } from '../../components';
+import { buttons, labels } from '../../Data/data';
 
 
 const Settings: React.FC = () => {
@@ -16,7 +14,7 @@ const Settings: React.FC = () => {
           <label className="flex-row justify-content-between mb-4">
             Profile Picture
             <a className="navbar-brand" href="#">
-              <img src={Avatar} alt="Avatar Logo" className="rounded-pill" />
+              <img src={ImageCollection.avatar} alt="Avatar Logo" className="rounded-pill" />
             </a>
           </label>
           <PrimaryLabel text={labels.username} inputType='text' />
@@ -26,7 +24,6 @@ const Settings: React.FC = () => {
           <Button text={buttons.save} />
         </form>
       </div >
-      <Footer />
     </div>
   )
 }

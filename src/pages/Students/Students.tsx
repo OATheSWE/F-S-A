@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { AiOutlinePlus } from '../../assets/IconImports';
+import { IconImports } from '../../assets';
 import { useNavigate } from 'react-router-dom';
 import StudentsList from './Students List/Students List';
-import Footer from '../../components/Footer/Footer';
-import Navbar from '../../components/Navbar/Navbar';
 import { db } from '../../firebase-config';
 import { collection, addDoc } from 'firebase/firestore';
 
@@ -20,20 +18,20 @@ const Students: React.FC = () => {
 
   const handleAddStudent = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     if (studentName) {
       try {
         const newStudent = {
           name: studentName,
           time: (new Date()).getTime()
         };
-  
+
         // Add the new student document to the Firestore collection
         await addDoc(studentsCollectionRef, newStudent);
-  
+
         // Reset the input field after successful addition
         setStudentName('');
-  
+
         // Optionally, show a success message to the user
         console.log('Student added successfully!');
 
@@ -45,12 +43,11 @@ const Students: React.FC = () => {
       }
     }
   };
-  
+
 
 
   return (
     <div className="whole-container">
-        <Navbar />
       <div className="popup text-white rounded students">
         <form onSubmit={handleAddStudent}>
           <h2>Students</h2>
@@ -63,13 +60,12 @@ const Students: React.FC = () => {
               onChange={handleInputChange}
             />
             <button type="submit" className="rounded" disabled={!studentName}>
-              <AiOutlinePlus className="plus-icon" />
+              <IconImports.AiOutlinePlus className="plus-icon" />
             </button>
           </label>
         </form>
       </div>
       <StudentsList />
-      <Footer />
     </div>
   );
 };

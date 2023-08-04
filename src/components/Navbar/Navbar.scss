@@ -286,9 +286,12 @@
           color: rgb(255, 193, 7);
         }
 
-        .link:nth-child(3) {
-          color: rgba(255, 255, 255, 0.55);
+        .link:nth-child(3):hover .icon,
+        .link:nth-child(3):hover span {
+          color: rgb(255, 193, 7);
         }
+
+        
       }
 
       .desktop-aside {

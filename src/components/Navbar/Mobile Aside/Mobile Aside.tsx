@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { TbReport, SlPeople, BsSend, HiBars3BottomRight } from '../../../assets/IconImports';
+import { IconImports } from '../../../assets';
 import AsideItem from '../Aside Item/Aside Item';
-import { classNames, navs } from '../../../assets/data';
-import { Link } from 'react-router-dom';
+import { classNames, navs } from '../../../Data/data';
 
 const MobileAside: React.FC = () => {
   const [isAsideVisible, setAsideVisible] = useState(false);
@@ -21,27 +20,27 @@ const MobileAside: React.FC = () => {
     /* Bottombar Button & MobileBottombar */
     <div className="nav-sidebar">
       <button className="navbar-toggler" type="button" onClick={handleAside}>
-        <HiBars3BottomRight className="icon-bars" id="bars2" />
+        <IconImports.HiBars3BottomRight className="icon-bars" id="bars2" />
       </button>
       <aside>
         <div className="mobile-aside" style={asideStyle}>
           <div className="d-flex justify-content-around">
             <AsideItem
-              link="#"
+              link="/"
               anchor={classNames.mAsideAnchor}
-              icon={<TbReport className={classNames.mAsideAnchorIcon} />}
+              icon={<IconImports.TbReport className={classNames.mAsideAnchorIcon} />}
               span={navs.report}
             />
             <AsideItem
               link="/students"
               anchor={classNames.mAsideAnchor}
-              icon={<SlPeople className={classNames.mAsideAnchorIcon} />}
+              icon={<IconImports.SlPeople className={classNames.mAsideAnchorIcon} />}
               span={navs.students}
             />
             <AsideItem
-              link="#"
-              anchor={`d-flex flex-column align-items-center text-decoration-none link`}
-              icon={<BsSend className={classNames.mAsideAnchorIcon} />}
+              link="/submit-report"
+              anchor={classNames.mAsideAnchor}
+              icon={<IconImports.BsSend className={classNames.mAsideAnchorIcon} />}
               span={navs.submit}
             />
           </div>

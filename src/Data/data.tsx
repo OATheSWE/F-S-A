@@ -1,4 +1,5 @@
-// data.ts
+
+// LABEL NAMES
 const labels = {
     username: 'Username:',
     phonenumber: 'Phone Number (Whatsapp):',
@@ -17,9 +18,13 @@ const labels = {
     tplacements: 'Total Placements:',
     treturnv: 'Total Return Visits:',
     tbstudy: 'Total Bible Studies Conducted:',
-    sName: 'Student Name:'
+    sName: 'Student Name:',
+    question: 'Questions Asked:'
 };
 
+
+
+// NAV LINKS NAMES
 const navs = {
     report: 'Report',
     students: 'Students',
@@ -28,6 +33,9 @@ const navs = {
     submit: 'Submit'
 };
 
+
+
+// BUTTON NAMES
 const buttons = {
     login: 'Log In',
     save: 'Save',
@@ -37,6 +45,9 @@ const buttons = {
     update: 'Update'
 };
 
+
+
+// DIFFERENT TIMES FOR A USER TO REPORT
 const times = [
     '6:00',
     '7:00',
@@ -54,6 +65,9 @@ const times = [
     '19:00'
 ];
 
+
+
+// CLASSNAMES FOR SOME COMPONENTS
 const classNames = {
     dAsideAnchor: 'd-flex',
     mAsideAnchor: 'd-flex flex-column align-items-center text-decoration-none link text-white',
@@ -68,12 +82,19 @@ const classNames = {
     liADropdown: 'dropdown-item text-white',
 };
 
+
+
+
+
 const notifications = {
     report: 'Your feild service report',
     settings: 'Update mobile number',
     students: "You haven't studied with john in a while",
 }
 
+
+
+// NAME OF MONTHS IN A YEAR
 const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'

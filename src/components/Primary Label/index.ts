@@ -1,0 +1,1 @@
+export { default as PrimaryLabel } from "./Primary Label";

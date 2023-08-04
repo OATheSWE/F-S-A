@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import PrimaryLabel from '../../components/Primary Label/Primary Label';
-import { buttons, labels } from '../../assets/data';
-import Button from '../../components/Button/Button';
-import Footer from '../../components/Footer/Footer';
+import { buttons, labels } from '../../Data/data';
+import { PrimaryLabel, Button, Footer } from '../../components';
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -110,7 +108,7 @@ const SignUp: React.FC = () => {
           {isValidNumber ? (
             <Button text={buttons.signup} onClick={handleSignupSubmit} />
           ) : null}
-          <Link to="/">Already have an account?</Link>
+          <Link to="/login">Already have an account?</Link>
         </form>
       </div>
       <Footer />

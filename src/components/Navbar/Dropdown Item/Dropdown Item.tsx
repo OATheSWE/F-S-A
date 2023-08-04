@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import { Link } from 'react-router-dom';
 
 interface DropdownItemProps {
   liStyle: string;
@@ -41,9 +42,9 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
         </div>
       )}
       {!renderDiv && liAStyle && link && linkText && (
-        <a className={liAStyle} href={link}>
+        <Link className={liAStyle} to={link}>
           {linkText}
-        </a>
+        </Link>
       )}
     </li>
   );

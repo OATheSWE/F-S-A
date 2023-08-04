@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { FaMapMarkerAlt } from '../../../../assets/IconImports';
-import PrimaryLabel from '../../../../components/Primary Label/Primary Label';
-import { buttons, labels } from '../../../../assets/data';
-import Button from '../../../../components/Button/Button';
-import Footer from '../../../../components/Footer/Footer';
-import Navbar from '../../../../components/Navbar/Navbar';
+import { IconImports } from '../../../assets';
+import { buttons, labels } from '../../../Data/data';
+import { PrimaryLabel, Button } from '../../../components';
 import { useParams, useNavigate } from 'react-router-dom';
-import { db } from '../../../../firebase-config';
+import { db } from '../../../firebase-config';
 import { updateDoc, doc, collection, getDoc } from 'firebase/firestore';
 
 type Student = {
   id: string;
   name: string;
   bookOfStudy: string;
+  question: string;
   pinnedLocation: {
     lat: number;
     lng: number;
@@ -24,6 +22,7 @@ const UpdateStudents: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [updatedName, setUpdatedName] = useState('');
   const [updatedBook, setUpdatedBook] = useState('');
+  const [updatedQuestion, setUpdatedQuestion] = useState('');
   const [updatedLocation, setUpdatedLocation] = useState({ lat: 0, lng: 0 });
 
 
@@ -37,6 +36,7 @@ const UpdateStudents: React.FC = () => {
         const studentData = studentSnapshot.data() as Student;
         setUpdatedName(studentData.name);
         setUpdatedBook(studentData.bookOfStudy);
+        setUpdatedQuestion(studentData.question);
       } else {
         navigate("/students");
       }
@@ -70,33 +70,36 @@ const UpdateStudents: React.FC = () => {
       const updatedStudent = {
         name: updatedName,
         bookOfStudy: updatedBook,
+        question: updatedQuestion,
         pinnedLocation: updatedLocation,
         time: (new Date()).getTime()
       };
       await updateDoc(studentRef, updatedStudent);
       navigate("/students");
+      alert('Student Updated Successfully!')
     } catch (error) {
       console.error("Error updating students: ", error);
+      alert('Student Could Not Be Updated!')
     }
   };
 
 
   return (
     <div className="whole-container">
-      <Navbar />
       <div className="popup text-white rounded new-students">
         <form onSubmit={handleUpdate}>
           <PrimaryLabel text={labels.name} inputType="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
           <PrimaryLabel
             text={labels.bofstudy} inputType="text" value={updatedBook} onChange={(e) => setUpdatedBook(e.target.value)} />
+            <PrimaryLabel
+            text={labels.question} inputType="text" value={updatedQuestion} onChange={(e) => setUpdatedQuestion(e.target.value)} />
           <div onClick={handleUpdateLocation} style={{ width: '60%' }}>
             Update Location
-            <FaMapMarkerAlt className="icon-locate" />
+            <IconImports.FaMapMarkerAlt className="icon-locate" />
           </div>
           <Button text={buttons.update}/>
         </form>
       </div>
-      <Footer />
     </div>
   );
 };

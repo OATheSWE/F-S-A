@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BiSearchAlt } from '../../../assets/IconImports';
+import { IconImports } from '../../../assets';
 
 const MobileSearch: React.FC = () => {
 
@@ -42,7 +42,7 @@ const MobileSearch: React.FC = () => {
         /* Mobile Search Bar */
         <div className="mobile-search" ref={mobileSearchRef}>
             <div className="icon-contain" onClick={mobileSearch}>
-                <BiSearchAlt className="icon-search" />
+                <IconImports.BiSearchAlt className="icon-search" />
             </div>
             <div className="popup-search" style={mobileSearchStyle}>
                 <input

@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FaMapMarkerAlt } from '../../../assets/IconImports';
-import PrimaryLabel from '../../../components/Primary Label/Primary Label';
-import { buttons, labels } from '../../../assets/data';
-import Button from '../../../components/Button/Button';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
+import { IconImports } from '../../../assets';
+import { buttons, labels } from '../../../Data/data';
+import { PrimaryLabel, Button } from '../../../components';
 import { db } from '../../../firebase-config'; // Make sure to import the Firebase configuration
-import { collection, getDocs, query, orderBy, limit, updateDoc,  } from 'firebase/firestore'; // Import Firestore functionalities
+import { collection, getDocs, query, orderBy, limit, updateDoc, } from 'firebase/firestore'; // Import Firestore functionalities
 
 import { useNavigate } from 'react-router-dom';
 
@@ -14,13 +11,14 @@ import { useNavigate } from 'react-router-dom';
 const NewStudents: React.FC = () => {
     const [latestName, setLatestName] = useState('');
     const [latestBook, setLatestBook] = useState('');
+    const [latestQuestion, setLatestQuestion] = useState('');
     const [pinLocation, setPinLocation] = useState({ lat: 0, lng: 0 });
     const navigate = useNavigate();
 
     useEffect(() => {
         const getLatestName = async () => {
             const studentsCollectionRef = collection(db, 'Students');
-            const studentsQuery = query(studentsCollectionRef, orderBy('time', 'desc'), limit(1)); 
+            const studentsQuery = query(studentsCollectionRef, orderBy('time', 'desc'), limit(1));
             const querySnapshot = await getDocs(studentsQuery);
 
             if (!querySnapshot.empty) {
@@ -49,16 +47,17 @@ const NewStudents: React.FC = () => {
     };
 
 
-   
-    
+
+
     const handleAddStudent = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (latestName || latestBook || pinLocation) {
+        if (latestName || latestBook || pinLocation || latestQuestion) {
             try {
                 const newStudent = {
                     name: latestName,
                     bookOfStudy: latestBook,
+                    question: latestQuestion,
                     pinnedLocation: pinLocation,
                     time: (new Date()).getTime()
                 };
@@ -71,11 +70,12 @@ const NewStudents: React.FC = () => {
                 await updateDoc(doc.ref, newStudent);
 
                 // Optionally, show a success message to the user
-                console.log('Student updated successfully!');
+                alert('Student Added successfully!');
 
                 // Reset the input fields after successful update
                 setLatestName('');
                 setLatestBook('');
+                setLatestQuestion('')
 
 
                 // Navigate to desired page
@@ -83,6 +83,7 @@ const NewStudents: React.FC = () => {
             } catch (error) {
                 // Handle error if the student update fails
                 console.error('Error updating student:', error);
+                alert('Student Could Not Be Added!');
             }
         }
     };
@@ -92,19 +93,18 @@ const NewStudents: React.FC = () => {
 
     return (
         <div className="whole-container">
-            <Navbar />
             <div className="popup text-white rounded new-students">
                 <form>
                     <PrimaryLabel text={labels.sName} inputType='text' value={latestName} onChange={(e) => setLatestName(e.target.value)} />
                     <PrimaryLabel text={labels.bofstudy} inputType='text' value={latestBook} onChange={(e) => setLatestBook(e.target.value)} />
+                    <PrimaryLabel text={labels.question} inputType='text' value={latestQuestion} onChange={(e) => setLatestQuestion(e.target.value)} />
                     <div onClick={handlePinLocation} >
                         Pin Location
-                        <FaMapMarkerAlt className="icon-locate" />
+                        <IconImports.FaMapMarkerAlt className="icon-locate" />
                     </div>
-                    <Button text={buttons.add} onClick={handleAddStudent}/>
+                    <Button text={buttons.add} onClick={handleAddStudent} />
                 </form>
             </div>
-            <Footer />
         </div>
     );
 }

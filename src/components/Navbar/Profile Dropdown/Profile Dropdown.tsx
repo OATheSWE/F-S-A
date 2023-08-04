@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BsFillGearFill, ImExit } from '../../../assets/IconImports';
-import Avatar from '../../../assets/avatar.png';
+import { IconImports, ImageCollection } from '../../../assets';
 import DropdownItem from '../Dropdown Item/Dropdown Item';
-import { classNames, navs } from '../../../assets/data';
+import { classNames, navs } from '../../../Data/data';
 
 const ProfileDropdown: React.FC = () => {
 
@@ -12,7 +11,7 @@ const ProfileDropdown: React.FC = () => {
     useEffect(() => {
 
         const handler = (e: MouseEvent) => {
-            if (!dropDownMenuRef.current?.contains(e.target as Node)) {
+            if (dropDownMenuRef.current?.contains(e.target as Node) || !dropDownMenuRef.current?.contains(e.target as Node)) {
                 setMenuVisible(false);
             }
 
@@ -40,7 +39,7 @@ const ProfileDropdown: React.FC = () => {
         <div className="avatar" ref={dropDownMenuRef}>
             <button type="button" className="btn btn-primary dropdown-toggle d-flex" data-bs-toggle="dropdown" onClick={handleMenu}>
                 <a className="navbar-brand" href="#">
-                    <img src={Avatar} alt="Avatar Logo" className="rounded-pill" />
+                    <img src={ImageCollection.avatar} alt="Avatar Logo" className="rounded-pill" />
                 </a>
                 <div className='avatar-name'> John Doe </div>
             </button>
@@ -50,20 +49,20 @@ const ProfileDropdown: React.FC = () => {
                 <DropdownItem
                     liStyle={classNames.liDropdown}
                     liDivStyle1={classNames.liDivDropdown}
-                    icon={<BsFillGearFill className={`classNames.dAsideAnchorDivIcon text-success`} />}
+                    icon={<IconImports.BsFillGearFill className={`classNames.dAsideAnchorDivIcon text-success`} />}
                     renderDiv={false}
                     liAStyle={classNames.liADropdown}
-                    link="#"
+                    link="/settings"
                     linkText={navs.settings}
                 />
                 <li className="dropdown-divider"></li>
                 <DropdownItem
                     liStyle={classNames.liDropdown}
                     liDivStyle1={classNames.liDivDropdown}
-                    icon={<ImExit className={`classNames.dAsideAnchorDivIcon text-danger`} />}
+                    icon={<IconImports.ImExit className={`classNames.dAsideAnchorDivIcon text-danger`} />}
                     renderDiv={false}
                     liAStyle={classNames.liADropdown}
-                    link="#"
+                    link="/login"
                     linkText={navs.logout}
                 />
             </ul>

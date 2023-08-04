@@ -40,7 +40,7 @@ const SecondaryLabel: React.FC<LabelProps> = ({ text, array, onClick, value, onS
     useEffect(() => {
 
         const handler = (e: MouseEvent) => {
-          if (labelRef.current?.contains(e.target as Node)) {
+          if (labelRef.current?.contains(e.target as Node) || !labelRef.current?.contains(e.target as Node)) {
             setMenuVisible(false);
           }
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaBell, TbReport, BsFillGearFill, SlPeople } from '../../../assets/IconImports';
+import { IconImports } from '../../../assets';
 import DropdownItem from '../Dropdown Item/Dropdown Item';
-import { classNames, navs, notifications } from '../../../assets/data';
+import { classNames, navs, notifications } from '../../../Data/data';
 
 const NotificationDropdown: React.FC = () => {
 
@@ -38,7 +38,7 @@ const NotificationDropdown: React.FC = () => {
     /* Notification Button & Dropdown */
     <div className="dropdown notify" ref={notifyRef}>
       <a href="#" className='bell-container dropdown-toggle' onClick={handleNotify}>
-        <FaBell className="icon-bell" />
+        <IconImports.FaBell className="icon-bell" />
         <span className="bg-danger count"></span>
       </a>
       <ul className="dropdown-menu" style={notifyStyle} id="menu1">
@@ -47,7 +47,7 @@ const NotificationDropdown: React.FC = () => {
         <DropdownItem
           liStyle={classNames.liDropdown}
           liDivStyle1={classNames.liDivDropdown}
-          icon={<TbReport className={`classNames.dAsideAnchorDivIcon text-success`} />}
+          icon={<IconImports.TbReport className={`classNames.dAsideAnchorDivIcon text-success`} />}
           renderDiv={true}
           liDivStyle2={classNames.liDiv2Dropdown}
           h6={classNames.liDiv2h6Dropdown}
@@ -59,7 +59,7 @@ const NotificationDropdown: React.FC = () => {
         <DropdownItem
           liStyle={classNames.liDropdown}
           liDivStyle1={classNames.liDivDropdown}
-          icon={<BsFillGearFill className={`classNames.dAsideAnchorDivIcon text-danger`} />}
+          icon={<IconImports.BsFillGearFill className={`classNames.dAsideAnchorDivIcon text-danger`} />}
           renderDiv={true}
           liDivStyle2={classNames.liDiv2Dropdown}
           h6={classNames.liDiv2h6Dropdown}
@@ -71,7 +71,7 @@ const NotificationDropdown: React.FC = () => {
         <DropdownItem
           liStyle={classNames.liDropdown}
           liDivStyle1={classNames.liDivDropdown}
-          icon={<SlPeople className={`classNames.dAsideAnchorDivIcon text-warning`} />}
+          icon={<IconImports.SlPeople className={`classNames.dAsideAnchorDivIcon text-warning`} />}
           renderDiv={true}
           liDivStyle2={classNames.liDiv2Dropdown}
           h6={classNames.liDiv2h6Dropdown}

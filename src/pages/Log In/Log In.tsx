@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { labels, buttons } from '../../assets/data';
-import PrimaryLabel from '../../components/Primary Label/Primary Label';
-import Button from '../../components/Button/Button';
-import RememberMe from '../../components/Remember Me/Remember Me';
-import Footer from '../../components/Footer/Footer';
+import { labels, buttons } from '../../Data/data';
+import { PrimaryLabel, Button, RememberMe, Footer } from '../../components';
 
 const LogIn: React.FC = () => {
   const navigate = useNavigate();
