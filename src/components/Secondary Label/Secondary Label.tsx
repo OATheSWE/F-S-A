@@ -4,91 +4,59 @@ import { db } from '../../firebase-config';
 
 
 interface LabelProps {
-    text: string;
+  text: string;
   inputType?: string;
-  array: string[];
+  array?: string[];
   onClick?: (value: string) => void;
-  selectedValues?: string[];
-  onSelectMultiple?: (selectedValues: string[]) => void;
   value: string;
-  selectedValue?: string;
-  onChange?:  (value: string[]) => void;
+  disabled?: boolean;
 }
 
-const SecondaryLabel: React.FC<LabelProps> = ({ text, array, onClick, value, onSelectMultiple }) => {
-
-    
-
-    const labelRef = useRef<HTMLLabelElement>(null);
-
-    const [isMenuVisible, setMenuVisible] = useState(false);
-    const [students, setStudents] = useState<string[]>([]);
-    const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+const SecondaryLabel: React.FC<LabelProps> = ({ text, array, onClick, value }) => {
 
 
-    useEffect(() => {
-        const getStudents = async () => {
-          const studentsCollectionRef = collection(db, 'Students');
-          const snapshot = await getDocs(studentsCollectionRef);
-          const studentNames = snapshot.docs.map((doc) => doc.data().name);
-          setStudents(studentNames);
-        };
-    
-        getStudents();
-      }, []);
 
-    useEffect(() => {
+  const labelRef = useRef<HTMLLabelElement>(null);
 
-        const handler = (e: MouseEvent) => {
-          if (labelRef.current?.contains(e.target as Node) || !labelRef.current?.contains(e.target as Node)) {
-            setMenuVisible(false);
-          }
+  const [isMenuVisible, setMenuVisible] = useState(false);
 
-    
-        }
-        document.addEventListener("mousedown", handler);
-    
-        return () => {
-          document.removeEventListener("mousedown", handler);
-        };
-    }, []);
+  useEffect(() => {
 
-    const handleMenu = () => {
-        setMenuVisible(!isMenuVisible);
+    const handler = (e: MouseEvent) => {
+      if (labelRef.current?.contains(e.target as Node) || !labelRef.current?.contains(e.target as Node)) {
+        setMenuVisible(false);
+      }
+
+
+    }
+    document.addEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
     };
+  }, []);
 
-    const dropdownStyle: React.CSSProperties = {
-        visibility: isMenuVisible ? 'visible' : 'hidden',
-        transform: isMenuVisible ? 'translateY(0.7rem)' : 'translateY(2.5rem)',
-        opacity: isMenuVisible ? '1' : '0',
-    };
+  const handleMenu = () => {
+    setMenuVisible(!isMenuVisible);
+  };
 
-    const handleStudentSelection = (selectedStudent: string) => {
-        const isSelected = selectedStudents.includes(selectedStudent);
-        let updatedSelectedStudents: string[];
-    
-        if (isSelected) {
-          updatedSelectedStudents = selectedStudents.filter((student) => student !== selectedStudent);
-        } else {
-          updatedSelectedStudents = [...selectedStudents, selectedStudent];
-        }
-    
-        setSelectedStudents(updatedSelectedStudents);
-        onSelectMultiple?.(updatedSelectedStudents);
-    };
-
-    
+  const dropdownStyle: React.CSSProperties = {
+    visibility: isMenuVisible ? 'visible' : 'hidden',
+    transform: isMenuVisible ? 'translateY(0.7rem)' : 'translateY(2.5rem)',
+    opacity: isMenuVisible ? '1' : '0',
+  };
 
 
-    return (
-        <label ref={labelRef}>
-            {text}
-            <div className="select rounded">
-                <div className="dropdown-toggle" onClick={handleMenu}>
-                    {value}
-                </div>
-                <ul className="dropdown-menu" style={dropdownStyle}>
-                {array &&
+
+  return (
+    <label ref={labelRef} >
+      {text}
+      <div className="select rounded">
+        <div className="dropdown-toggle" onClick={handleMenu}>
+          {value}
+        </div>
+        <ul className="dropdown-menu" style={dropdownStyle}>
+          {array &&
             array.map((time, index) => (
               <li
                 className={'dropdown-item rounded'}
@@ -100,22 +68,10 @@ const SecondaryLabel: React.FC<LabelProps> = ({ text, array, onClick, value, onS
                 {time}
               </li>
             ))}
-          {students &&
-            students.map((student, index) => (
-              <li
-                className={`dropdown-item rounded ${
-                  selectedStudents.includes(student) ? 'selected' : ''
-                }`}
-                key={index}
-                onClick={() => handleStudentSelection(student)}
-              >
-                {student}
-              </li>
-            ))}
-                </ul>
-            </div>
-        </label>
-    );
+        </ul>
+      </div>
+    </label>
+  );
 };
 
 export default SecondaryLabel;

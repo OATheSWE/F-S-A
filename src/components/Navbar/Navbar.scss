@@ -338,20 +338,25 @@
 }
         }
 
-        a:not(:last-child):hover {
+        a:hover {
           background-color: rgba(0, 0, 0, 0.5);
         }
 
-        a:not(:last-child):hover span {
+        a:hover span {
           color: white;
         }
 
-        a:not(:last-child):focus {
+        a:focus {
           border-left: 3px solid;
           background-color: rgba(0, 0, 0, 0.5);
         }
 
-        a:not(:last-child):focus span {
+        a:active {
+          border-left: 3px solid;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        a:focus span {
           color: white;
         }
       }

@@ -3,14 +3,15 @@ import { IconImports } from '../../assets';
 import { useNavigate } from 'react-router-dom';
 import StudentsList from './Students List/Students List';
 import { db } from '../../firebase-config';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { useAuth } from "../../AuthContext";
 
 
 
 const Students: React.FC = () => {
   const [studentName, setStudentName] = useState('');
   const navigate = useNavigate();
-  const studentsCollectionRef = collection(db, 'Students');
+  const auth = useAuth();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStudentName(event.target.value);
@@ -26,8 +27,25 @@ const Students: React.FC = () => {
           time: (new Date()).getTime()
         };
 
-        // Add the new student document to the Firestore collection
-        await addDoc(studentsCollectionRef, newStudent);
+        const studentsDocRef = doc(db, auth.currentUser?.uid, 'Students');
+
+        const newStudentsDocSnapshot = await getDoc(studentsDocRef);
+
+        if (!newStudentsDocSnapshot.exists()) {
+          await setDoc(studentsDocRef, {});
+        }
+
+       
+        const existingStudents = newStudentsDocSnapshot.data();
+
+        // Create a new object inside the main object with the report for the current day
+        const updatedStudents = {
+          ...existingStudents,
+          [studentName]: newStudent,
+        };
+
+        await setDoc(studentsDocRef, updatedStudents);
+
 
         // Reset the input field after successful addition
         setStudentName('');

@@ -5,7 +5,7 @@ const labels = {
     phonenumber: 'Phone Number (Whatsapp):',
     service: 'Whatsapp Number of Service Overseer:',
     password: 'Password:',
-    userorphone: 'Username or Phone Number:',
+    nameorphone: 'Username or Phone Number:',
     video: 'Video Count:',
     placement: 'Placement:',
     starth: 'Start Hour:',
@@ -49,20 +49,25 @@ const buttons = {
 
 // DIFFERENT TIMES FOR A USER TO REPORT
 const times = [
-    '6:00',
-    '7:00',
-    '8:00',
-    '9:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00'
+    '5am',
+    '6am',
+    '7am',
+    '8am',
+    '9am',
+    '10am',
+    '11am',
+    '12pm',
+    '1pm',
+    '2pm',
+    '3pm',
+    '4pm',
+    '5pm',
+    '6pm',
+    '7pm',
+    '8pm',
+    '9pm',
+    '10pm',
+    '11pm'
 ];
 
 

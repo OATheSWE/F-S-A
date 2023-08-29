@@ -3,88 +3,39 @@
 import React, { useState, useEffect } from 'react';
 import { IconImports } from '../../assets';
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase-config';
+import { useAuth } from "../../AuthContext";
 
 const Report: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const navigate = useNavigate();
     const [recordedDates, setRecordedDates] = useState<string[]>([]);
     const [today, setToday] = useState(currentDate.getDate());
-    const [userReportData, setUserReportData] = useState<any | null>(null);
-    const [messageSent, setMessageSent] = useState(false);
-    const [executeWhatsApp, setExecuteWhatsApp] = useState(false);
+    const auth = useAuth();
+
 
     useEffect(() => {
         setToday(today);
     }, [today]);
 
-    // Check whether the message to send last months report has already appeared before
-    useEffect(() => {
-        // Check if the message has been sent before
-        const messageSentBefore = localStorage.getItem('messageSent');
-        if (messageSentBefore) {
-            setMessageSent(true);
-        }
-    }, []);
-
-    useEffect(() => {
-        // Check if it's the first day of the month
-        const currentDate = new Date();
-        const currentDay = currentDate.getDate();
-        if (currentDay === 1) {
-            // Clear the 'messageSent' from local storage
-            localStorage.removeItem('messageSent');
-            // Update the state to reflect the change
-            setMessageSent(false);
-            setExecuteWhatsApp(false);
-        }
-
-    }, []);
 
 
-    // Function to get the previous month
-    const getPreviousMonth = () => {
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const previousMonthDate = new Date();
-        previousMonthDate.setMonth(currentMonth - 1);
-
-        return previousMonthDate;
-    };
-
+    //Fetching data from firestore to use in this page
     useEffect(() => {
 
         // Function to fetch the object names from Firestore
         const fetchRecordedDates = async () => {
             try {
-                // Get the previous & current month's name and year
-                const previousMonthDate = getPreviousMonth();
-                const previousMonthName = previousMonthDate.toLocaleString('default', { month: 'long' });
-                const previousMonthYear = previousMonthDate.getFullYear();
-                const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
-                const currentYear = currentDate.getFullYear();
-
                 // Get the doucment collection & names needed
-                const reportDocumentRef = doc(db, 'Reports', `${currentMonth} ${currentYear}`);
-                const reportDocumentSnapshot = await getDoc(reportDocumentRef);
-                const reportDocumentRef2 = doc(db, 'Reports', `${previousMonthName} ${previousMonthYear}`);
-                const reportDocumentSnapshot2 = await getDoc(reportDocumentRef2);
+                const reportDocRef = doc(db, auth.currentUser?.uid, "Reports");
+                const reportDocSnapshot = await getDoc(reportDocRef);
 
                 // To get the dates of recorded reports
-                if (reportDocumentSnapshot.exists()) {
-                    const recordedDatesData = reportDocumentSnapshot.data();
-                    const dates = Object.keys(recordedDatesData); // Get the object keys as dates
-                    setRecordedDates(dates);
-                }
-
-                if (reportDocumentSnapshot2.exists()) {
-                    const reportData = reportDocumentSnapshot2.data();
-                    // Access the 'total' object inside the 'reportData'
-                    const totalObject = reportData.Total;
-                    setUserReportData(totalObject)
-                } else {
-                    console.log('empty')
+                if (reportDocSnapshot.exists()) {
+                    const reportData = reportDocSnapshot.data();
+                    const reportDays = Object.keys(reportData).flatMap(month => Object.keys(reportData[month]));
+                    setRecordedDates(reportDays);
                 }
 
             } catch (error) {
@@ -102,10 +53,11 @@ const Report: React.FC = () => {
         const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
         const dateString = `${currentMonth} ${day} ${year}`;
         return recordedDates.includes(dateString);
+
     };
 
 
-
+    // Button to switch to the previous month
     const handlePrevMonth = () => {
         setCurrentDate((prevDate) => {
             const prevMonth = prevDate.getMonth() - 1;
@@ -114,6 +66,7 @@ const Report: React.FC = () => {
         });
     };
 
+    // Button to switch to the next month
     const handleNextMonth = () => {
         setCurrentDate((prevDate) => {
             const nextMonth = prevDate.getMonth() + 1;
@@ -122,76 +75,8 @@ const Report: React.FC = () => {
         });
     };
 
-    // Whatsapp logic to send previous months report
-    const handleWhatsAppSubmit = () => {
-        // Now you can access the individual fields inside the 'total' object
-        const totalHours = userReportData.tHours;
-        const totalVideos = userReportData.tVideos;
-        const totalPlacements = userReportData.tPlacements;
-        const totalReturnVisits = userReportData.tReturnVisits;
-        const totalBibleStudies = userReportData.tBibleStudies;
 
-        const previousMonthDate = getPreviousMonth();
-        const previousMonthName = previousMonthDate.toLocaleString('default', { month: 'long' });
-
-        const hasNonZeroInput = totalHours > 0 || totalVideos > 0 || totalPlacements > 0 || totalReturnVisits > 0 || totalBibleStudies > 0;
-
-
-
-        if (userReportData || hasNonZeroInput) {
-            // No report data for the previous month, send a different WhatsApp message
-            const phoneNumber = '+2347066463731'; // Replace this with the actual phone number
-            const message = `My Field Service Report For The Month Of ${previousMonthName} - ${totalHours} Hours, ${totalVideos} Videos, ${totalPlacements} Placements, ${totalReturnVisits} Return Visits, ${totalBibleStudies} Bible Studies`;
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-            // Open WhatsApp in a new window with the pre-filled message
-            window.open(whatsappURL, '_blank');
-
-            // Mark the message as sent in local storage
-            localStorage.setItem('messageSent', 'true');
-            setMessageSent(true);
-        } else {
-            // Send WhatsApp message with report data
-            const phoneNumber = '+2347066463731'; // Replace this with the actual phone number
-            const message = `I Participated In The Feild Service For The Month Of ${previousMonthName}.`;
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-            // Open WhatsApp in a new window with the pre-filled message
-            window.open(whatsappURL, '_blank');
-
-            // Mark the message as sent in local storage
-            localStorage.setItem('messageSent', 'true');
-            setMessageSent(true);
-        }
-    };
-
-    useEffect(() => {
-        // Execute the WhatsApp logic 3 seconds after the page loads if the message has not been sent before
-        if (!messageSent && executeWhatsApp) {
-            handleWhatsAppSubmit();
-        }
-    }, [messageSent, executeWhatsApp]);
-
-    useEffect(() => {
-        // Execute the WhatsApp logic 3 seconds after the page loads if the message has not been sent before
-        if (!messageSent) {
-
-            const timer = setTimeout(() => {
-                const confirmed = window.confirm('Do you want to send last month\'s report via WhatsApp?');
-                if (confirmed) {
-                    setExecuteWhatsApp(true);
-                }
-
-            }, 3000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [messageSent]);
-
-
-
+    // Function to render the calendar
     const renderCalendarDays = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -212,12 +97,18 @@ const Report: React.FC = () => {
             const dayClass = isCurrentDay ? "calendar-day current-day rounded" : "calendar-day bg-dark rounded";
             const isPastDay = i > today;
             const dayStyle = hasRecordedReport(i, year) ? { borderBottom: '2px solid #fff' } : {};
-
+            const isCurrentMonth = i === year && month;
             days.push(
                 <div
                     className={isPastDay ? "calendar-day bg-dark rounded" : dayClass}
                     key={i}
-                    onClick={isPastDay ? undefined : () => linkTo(i, year)}
+                    onClick={() => {
+                        if (isPastDay && isCurrentMonth) {
+                            linkTo(i, year);
+                        } else {
+                            window.alert("A report cannot be recorded outside of the current month.");
+                        }
+                    }}
                     style={dayStyle}
                 >
                     {i}
@@ -228,25 +119,20 @@ const Report: React.FC = () => {
         return days;
     };
 
-    // Function to check if a report has already been recorded for the selected day
-    const isReportRecorded = async (day: number, year: number) => {
-        const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
-        const dateString = `${currentMonth} ${day} ${year}`;
-        const reportDocumentRef = doc(db, 'Reports', `${currentMonth} ${year}`);
-        const reportDocumentSnapshot = await getDoc(reportDocumentRef);
 
-        if (reportDocumentSnapshot.exists()) {
-            const recordedDatesData = reportDocumentSnapshot.data();
-            return recordedDatesData[dateString] !== undefined;
+    // Check for if a report has been recorded for a particular day already.
+    const linkTo = async (day: number, year: number) => {
+        const currentDate = new Date(); // Get the current date
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+
+        // Check if the selected day and year are in the current month
+        if (year !== currentYear || currentDate.getMonth() !== currentMonth) {
+            alert("Reports can only be recorded in the current month.");
+            return;
         }
 
-        return false;
-    };
-
-
-
-    const linkTo = async (day: number, year: number) => {
-        const reportExists = await isReportRecorded(day, year);
+        const reportExists = await hasRecordedReport(day, year);
         if (reportExists) {
             const confirmDelete = window.confirm('A report has already been recorded for this day. Do you want to proceed and overwrite it?');
             if (!confirmDelete) {
@@ -258,6 +144,7 @@ const Report: React.FC = () => {
             navigate(`/record-report/?day=${day}`, { replace: true });
         }, 1000);
     };
+
 
     return (
 

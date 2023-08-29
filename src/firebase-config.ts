@@ -1,16 +1,19 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCP984y2HskeDPyrybPj7LCSutsslByBBM",
-    authDomain: "feild-service-assistant.firebaseapp.com",
-    projectId: "feild-service-assistant",
-    storageBucket: "feild-service-assistant.appspot.com",
-    messagingSenderId: "805339234189",
-    appId: "1:805339234189:web:b81f6cee2be6f8c9e8c7c4",
-    measurementId: "G-DT5C69W12V"
-};
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  };  
+
 
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 
 export const db = getFirestore(app);

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { IconImports } from '../../../assets';
 import AsideItem from '../Aside Item/Aside Item';
 import { classNames, navs } from '../../../Data/data';
+import { useAuth } from "../../../AuthContext"; 
 
 const DesktopAside: React.FC = () => {
 
     const [isExpanded, setExpanded] = useState(false);
+    const { logout } = useAuth();
 
     const expandSidebar = () => {
         setExpanded(!isExpanded);
@@ -46,15 +48,16 @@ const DesktopAside: React.FC = () => {
                     span={navs.students}
                     />
                     <AsideItem 
-                    link="/login" 
+                    link="/" 
                     anchor={classNames.dAsideAnchor} 
                     div={classNames.dAsideAnchorDiv} 
                     icon={<IconImports.ImExit className={`classNames.dAsideAnchorDivIcon text-danger`} />}
                     spanStyle={asideStyle3}
                     span={navs.logout}
+                    onClick={logout}
                     />
                     <AsideItem 
-                    link="/submit-report" 
+                    link="/submit-report"
                     anchor={classNames.dAsideAnchor} 
                     div={classNames.dAsideAnchorDiv} 
                     icon={<IconImports.BsSend className={classNames.dAsideAnchorDivIcon} />}
@@ -68,3 +71,6 @@ const DesktopAside: React.FC = () => {
 };
 
 export default DesktopAside;
+
+
+

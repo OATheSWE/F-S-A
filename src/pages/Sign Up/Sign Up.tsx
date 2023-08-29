@@ -2,25 +2,29 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { buttons, labels } from '../../Data/data';
 import { PrimaryLabel, Button, Footer } from '../../components';
+import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../../firebase-config';
+import { AuthProvider } from '../../AuthContext';
+
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [email, setUsername] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [service, setService] = useState('');
   const [password, setPassword] = useState('');
-  const [isValidNumber, setIsValidNumber] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [isValid, setIsValid] = useState(true);
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
+    setIsValid(!email.includes(' '));
   };
 
   const handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputPhoneNumber = event.target.value;
     setPhoneNumber(inputPhoneNumber);
-    setIsValidNumber(isValidPhoneNumber(inputPhoneNumber));
+    // setIsValidNumber(isValidPhoneNumber(inputPhoneNumber));
   };
 
   const handleServiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,46 +35,70 @@ const SignUp: React.FC = () => {
     setPassword(event.target.value);
   };
 
-  const handleSignupSubmit = (event: React.FormEvent) => {
+  const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Check if any of the fields are empty
-    if (!username || !phoneNumber || !service || !password) {
-      setSuccess('');
-      setError('Please fill in all the fields');
-      return;
-    }
+    const userName = email;
+    const userPhoneNumber = phoneNumber;
+    const overseerPhoneNumber = service;
+    const userPassword = password;
 
-    // Store user data in local storage
-    localStorage.setItem('Username', username);
-    localStorage.setItem('PhoneNumber', phoneNumber);
-    localStorage.setItem('Phone Number of Service Overseer', service);
-    localStorage.setItem('Password', password);
-
-    
-    // Alert User & Navigate to the Login Page
-    if (username || phoneNumber || service || password) {
-      setError('');
-      setSuccess('Signup Successful');
-      setTimeout(() => {
-        navigate('/', { replace: true });
-      }, 2500);
-      return;
-    }
-
-    // Navigate to the main page
-    setTimeout(() => {
-      navigate('/calendar', { replace: true });
-    }, 1000);
-  };
-
-  const isValidPhoneNumber = (phoneNumber: string) => {
     // Regular expression for validating phone number
-    const phoneRegex = /^[0-9]+$/; // Allows any number of digits
-    return phoneRegex.test(phoneNumber);
+    const phoneRegex = /^\d{11}$/; // Matches 11 digits
+
+    if (!phoneRegex.test(userPhoneNumber) || !phoneRegex.test(overseerPhoneNumber)) {
+      alert('Please enter valid phone number (11 digits).');
+      return;
+    }
+
+    // Regular expression for validating password (at least one letter and one number)
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)/;
+
+    if (!passwordRegex.test(userPassword)) {
+      alert('Password must contain at least one letter and one number.');
+      return;
+    }
+
+    if (!isValid) {
+      alert('Username cannot contain spaces.');
+      return;
+    }
+
+    try {
+      // Create a new user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, `${userName}@example.com`, password);
+
+      const userCollectionRef = collection(db, userCredential.user?.uid);
+      const userDocRef = doc(userCollectionRef, "UserInfo");
+      
+
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (!userDocSnapshot.exists()) {
+        // Create the month-ye if it doesn't exist
+        await setDoc(userDocRef, {
+          userName,
+          userPhoneNumber,
+          overseerPhoneNumber,
+          userPassword
+        });
+      }
+
+      alert('Signup successful! Please log in with your new account.');
+
+      // Navigate to login page
+      navigate("/")
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error('Error signing up:', error.message);
+      alert('Error signing up. Please try again!.');
+    }
   };
+
 
   return (
+    <AuthProvider >
     <div className="whole-container">
       <div className="popup text-white rounded signup">
         <form onSubmit={handleSignupSubmit}>
@@ -78,9 +106,10 @@ const SignUp: React.FC = () => {
           <PrimaryLabel
             text={labels.username}
             inputType="text"
-            value={username}
+            value={email}
             onChange={handleUsernameChange}
             placeholder="Eg chioma12"
+            required={true}
           />
           <PrimaryLabel
             text={labels.phonenumber}
@@ -88,6 +117,7 @@ const SignUp: React.FC = () => {
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
             placeholder="Eg 09022345715"
+            required={true}
           />
           <PrimaryLabel
             text={labels.service}
@@ -95,6 +125,7 @@ const SignUp: React.FC = () => {
             value={service}
             onChange={handleServiceChange}
             placeholder="Eg 09022345715"
+            required={true}
           />
           <PrimaryLabel
             text={labels.password}
@@ -102,17 +133,15 @@ const SignUp: React.FC = () => {
             value={password}
             onChange={handlePasswordChange}
             placeholder="Eg 22224e"
+            required={true}
           />
-          {success && <p className="success-message">{success}</p>}
-          {error && <p className="error-message" >{error}</p>}
-          {isValidNumber ? (
-            <Button text={buttons.signup} onClick={handleSignupSubmit} />
-          ) : null}
-          <Link to="/login">Already have an account?</Link>
+          <Button text={buttons.signup} />
+          <Link to="/">Already have an account?</Link>
         </form>
       </div>
       <Footer />
     </div>
+    </AuthProvider>
   );
 };
 

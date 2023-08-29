@@ -3,9 +3,6 @@ import MobileAside from './Mobile Aside/Mobile Aside';
 import DesktopAside from './Desktop Aside/Desktop Aside';
 import ProfileDropdown from './Profile Dropdown/Profile Dropdown';
 import NotificationDropdown from './Notification Dropdown/Notification Dropdown';
-import MobileSearch from './Mobile Search/Mobile Search';
-import DesktopSearch from './Desktop Search/Desktop Search';
-
 
 
 
@@ -21,9 +18,7 @@ const Navbar: React.FC = () => {
           <DesktopAside />
           <a className="navbar-brand name" href="#">F-S-A</a>
         </div>
-        <DesktopSearch />
         <div className="d-flex">
-          <MobileSearch />
           <NotificationDropdown />
           <ProfileDropdown />
           <MobileAside />

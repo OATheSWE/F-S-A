@@ -1,10 +1,11 @@
+/* eslint-disable no-prototype-builtins */
 import React, { useState, useEffect } from 'react';
 import { IconImports } from '../../../assets';
 import { buttons, labels } from '../../../Data/data';
 import { PrimaryLabel, Button } from '../../../components';
 import { db } from '../../../firebase-config'; // Make sure to import the Firebase configuration
-import { collection, getDocs, query, orderBy, limit, updateDoc, } from 'firebase/firestore'; // Import Firestore functionalities
-
+import { collection, getDocs, query, orderBy, limit, updateDoc, doc, getDoc, onSnapshot, setDoc, } from 'firebase/firestore'; // Import Firestore functionalities
+import { useAuth } from "../../../AuthContext";
 import { useNavigate } from 'react-router-dom';
 
 
@@ -14,22 +15,45 @@ const NewStudents: React.FC = () => {
     const [latestQuestion, setLatestQuestion] = useState('');
     const [pinLocation, setPinLocation] = useState({ lat: 0, lng: 0 });
     const navigate = useNavigate();
+    const auth = useAuth();
 
     useEffect(() => {
-        const getLatestName = async () => {
-            const studentsCollectionRef = collection(db, 'Students');
-            const studentsQuery = query(studentsCollectionRef, orderBy('time', 'desc'), limit(1));
-            const querySnapshot = await getDocs(studentsQuery);
+        const fetchLatestName = async () => {
+            if (auth.currentUser) {
+                const studentsDocRef = doc(db, auth.currentUser.uid, 'Students');
+                const studentsDocSnapshot = await getDoc(studentsDocRef);
 
-            if (!querySnapshot.empty) {
-                const doc = querySnapshot.docs[0];
-                const latestName = doc.data().name;
-                setLatestName(latestName);
+                if (studentsDocSnapshot.exists()) {
+                    const studentData = studentsDocSnapshot.data();
+
+                    let latestStudentKey = null;
+                    let latestTime = 0; // Initialize to 0 or a very small value
+
+                    for (const studentKey in studentData) {
+                        if (studentData.hasOwnProperty(studentKey)) {
+                            const student = studentData[studentKey];
+                            if (student.time > latestTime) {
+                                latestTime = student.time;
+                                latestStudentKey = studentKey;
+                            }
+
+                        }
+                    }
+
+                    if (latestStudentKey) {
+                        setLatestName(studentData[latestStudentKey].name)
+                    }
+
+
+
+                }
             }
-        };
+        }
 
-        getLatestName();
+        fetchLatestName();
     }, []);
+
+
 
     const handlePinLocation = () => {
         // Use the Geolocation API to retrieve the user's current location
@@ -48,7 +72,6 @@ const NewStudents: React.FC = () => {
 
 
 
-
     const handleAddStudent = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -59,27 +82,53 @@ const NewStudents: React.FC = () => {
                     bookOfStudy: latestBook,
                     question: latestQuestion,
                     pinnedLocation: pinLocation,
-                    time: (new Date()).getTime()
+                    time: new Date().getTime(),
                 };
 
-                const studentsCollectionRef = collection(db, 'Students');
-                const querySnapshot = query(studentsCollectionRef, orderBy('time', 'desc'), limit(1));
-                const latestDoc = await getDocs(querySnapshot);
-                const doc = latestDoc.docs[0];
+                const studentsDocRef = doc(db, auth.currentUser?.uid, 'Students');
 
-                await updateDoc(doc.ref, newStudent);
+                const studentsDocSnapshot = await getDoc(studentsDocRef);
 
-                // Optionally, show a success message to the user
-                alert('Student Added successfully!');
+                if (!studentsDocSnapshot.exists()) {
+                    await setDoc(studentsDocRef, {});
+                }
 
-                // Reset the input fields after successful update
-                setLatestName('');
-                setLatestBook('');
-                setLatestQuestion('')
+                const existingStudents = studentsDocSnapshot.data();
 
+                let latestStudentKey = null;
+                let latestTime = 0;
 
-                // Navigate to desired page
-                navigate('/students');
+                // Find the latest object based on the time property
+                for (const studentKey in existingStudents) {
+                    if (existingStudents.hasOwnProperty(studentKey)) {
+                        const student = existingStudents[studentKey];
+                        if (student.time > latestTime) {
+                            latestTime = student.time;
+                            latestStudentKey = studentKey;
+                        }
+                    }
+                }
+
+                if (latestStudentKey) {
+
+                    const updatedStudents = {
+                        ...existingStudents,
+                        [latestStudentKey]: newStudent,
+                    };
+
+                    await setDoc(studentsDocRef, updatedStudents);
+
+                    // Optionally, show a success message to the user
+                    alert('Student Added successfully!');
+
+                    // Reset the input fields after successful update
+                    setLatestName('');
+                    setLatestBook('');
+                    setLatestQuestion('');
+
+                    // Navigate to desired page
+                    navigate('/students');
+                }
             } catch (error) {
                 // Handle error if the student update fails
                 console.error('Error updating student:', error);
@@ -91,10 +140,11 @@ const NewStudents: React.FC = () => {
 
 
 
+
     return (
         <div className="whole-container">
             <div className="popup text-white rounded new-students">
-                <form>
+                <form onSubmit={handleAddStudent}>
                     <PrimaryLabel text={labels.sName} inputType='text' value={latestName} onChange={(e) => setLatestName(e.target.value)} />
                     <PrimaryLabel text={labels.bofstudy} inputType='text' value={latestBook} onChange={(e) => setLatestBook(e.target.value)} />
                     <PrimaryLabel text={labels.question} inputType='text' value={latestQuestion} onChange={(e) => setLatestQuestion(e.target.value)} />
@@ -102,7 +152,7 @@ const NewStudents: React.FC = () => {
                         Pin Location
                         <IconImports.FaMapMarkerAlt className="icon-locate" />
                     </div>
-                    <Button text={buttons.add} onClick={handleAddStudent} />
+                    <Button text={buttons.add} />
                 </form>
             </div>
         </div>

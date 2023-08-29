@@ -1,57 +1,55 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { labels, buttons } from '../../Data/data';
-import { PrimaryLabel, Button, RememberMe, Footer } from '../../components';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { labels, buttons } from "../../Data/data";
+import { PrimaryLabel, Button, Footer } from "../../components";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { collection, getDoc, doc } from "firebase/firestore";
+import { auth, db } from "../../firebase-config";
+import { useAuth } from "../../AuthContext"; 
 
 const LogIn: React.FC = () => {
   const navigate = useNavigate();
-  const [userOrPhone, setUserOrPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useAuth(); // Access the login function from the AuthContext
 
-  const handleUserOrPhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserOrPhone(event.target.value);
+  const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
-  const handleRememberMeChange = () => {
-    setRememberMe(!rememberMe);
-  
-    // Set the rememberMe flag in localStorage
-    localStorage.setItem('Remember Me', !rememberMe ? 'true' : 'false');
-  };
-
-  const handleLoginSubmit = (event: React.FormEvent) => {
+  const handleLoginSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
-    // Retrieve user data from local storage
-    const storedUsername = localStorage.getItem('Username');
-    const storedPhoneNumber = localStorage.getItem('PhoneNumber');
-    const storedPassword = localStorage.getItem('Password');
-  
-    // Check if the entered userOrPhone and password match the stored data
-    if (
-      (userOrPhone === storedUsername || userOrPhone === storedPhoneNumber) &&
-      password === storedPassword
-    ) {
-      setError('');
-      setSuccess('Login Successful');
-      
-      // Login successful, Navigate to the calendar page
-      setTimeout(() => {
-        navigate('/calendar', { replace: true });
-      }, 1500);
-    } else {
-      // Login failed, show an error message
-      setError('Invalid login credentials');
-      setSuccess('');
-    }
 
+    try {
+      // Log in the user using their email or phone number
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        `${userName}@example.com`,
+        password
+      );
+
+      // Retrieve the user data from Firestore
+      const userCollectionRef = collection(db, userCredential.user?.uid);
+      const userDocRef = doc(userCollectionRef, "UserInfo");                               
+      
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (userDocSnapshot.exists()) {
+        // Call the login function from the AuthContext
+        login();
+        // User exists, redirect to the home page or any other protected page
+        navigate("/");
+      } else {
+        alert("User data not found. Please sign up first.");
+      }
+    } catch (error: any) {
+      console.error("Error signing in:", error.message);
+      alert("Invalid username or password. Please try again.");
+    }
   };
 
   return (
@@ -60,11 +58,12 @@ const LogIn: React.FC = () => {
         <form onSubmit={handleLoginSubmit}>
           <h2>Log In</h2>
           <PrimaryLabel
-            text={labels.userorphone}
+            text={labels.username}
             inputType="text"
-            value={userOrPhone}
-            onChange={handleUserOrPhoneChange}
+            value={userName}
+            onChange={handleUserNameChange}
             placeholder="Eg chioma12 or 09022345715"
+            required={true}
           />
           <PrimaryLabel
             text={labels.password}
@@ -72,14 +71,9 @@ const LogIn: React.FC = () => {
             value={password}
             onChange={handlePasswordChange}
             placeholder="Eg 22224e"
+            required={true}
           />
-          <RememberMe
-            checked={rememberMe}
-            onChange={handleRememberMeChange}
-          />
-          {success && <p className="success-message">{success}</p>}
-          {error && <p className="error-message" >{error}</p>}
-          <Button text={buttons.login} onClick={handleLoginSubmit} />
+          <Button text={buttons.login} />
           <Link to="/signup">Don't have an account yet?</Link>
         </form>
       </div>

@@ -14,6 +14,7 @@ interface DropdownItemProps {
   liAStyle?: string;
   link?: string;
   linkText?: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement> | undefined;
 }
 
 const DropdownItem: React.FC<DropdownItemProps> = ({
@@ -29,9 +30,10 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
   liAStyle,
   link,
   linkText,
+  onClick
 }) => {
   return (
-    <li className={liStyle}>
+    <li className={liStyle} >
       <div className={liDivStyle1}>
         {icon}
       </div>
@@ -42,7 +44,7 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
         </div>
       )}
       {!renderDiv && liAStyle && link && linkText && (
-        <Link className={liAStyle} to={link}>
+        <Link className={liAStyle} to={link} onClick={onClick}>
           {linkText}
         </Link>
       )}

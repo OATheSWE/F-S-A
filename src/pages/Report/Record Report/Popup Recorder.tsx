@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { labels, buttons, times, monthNames } from '../../../Data/data';
 import { PrimaryLabel, Button, SecondaryLabel } from '../../../components';
-import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase-config';
 import { useNavigate, useLocation } from 'react-router-dom';
+import SecondaryLabel2 from '../../../components/Secondary Label/Seondary Label2';
+import { useAuth } from "../../../AuthContext";
 
 
 const PopupRecorder: React.FC = () => {
   const [videoCount, setVideoCount] = useState('');
   const [placements, setPlacements] = useState('');
-  const [selectedStart, setSelectedStart] = useState('Open (6am - 7pm)');
-  const [selectedStop, setSelectedStop] = useState('Open (6am - 7pm)');
+  const [selectedStart, setSelectedStart] = useState('Select');
+  const [selectedStop, setSelectedStop] = useState('Select');
   const [selectedStartHour, setSelectedStartHour] = useState<number>(0);
   const [selectedStopHour, setSelectedStopHour] = useState<number>(0);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [day, setDay] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const auth = useAuth();
+
 
   useEffect(() => {
     // Parse the query parameters from the location object
@@ -29,10 +33,26 @@ const PopupRecorder: React.FC = () => {
 
 
 
+
   const convertTimeToHours = (time: string): number => {
-    const [hour, minute] = time.split(':').map(Number);
-    return hour + minute / 60;
+    const numericHour = parseInt(time, 10); // Convert the hour part of the time string to a number
+    const isPM = time.includes('pm');
+
+    if (isPM && numericHour !== 12) {
+      // If it's in the afternoon (PM) and not 12pm, add 12 to convert to 24-hour format
+      return numericHour + 12;
+    } else if (!isPM && numericHour === 12) {
+      // If it's 12am (midnight), set it to 0 in 24-hour format
+      return 0;
+    } else {
+      // If it's in the morning (AM) or 12pm (noon), keep it as it is
+      return numericHour;
+    }
   };
+
+
+
+
 
   const handleStartSelection = (value: string) => {
     setSelectedStart(value);
@@ -61,6 +81,13 @@ const PopupRecorder: React.FC = () => {
   const handleRecordReport = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Check if the stop hour is selected
+    if (selectedStartHour && (selectedStop === 'Select' || !selectedStop)) {
+      // Display an error message or handle the condition as desired
+      alert('Please select the stop hour before adding your report!.');
+      return;
+    }
+
     const hours = selectedStopHour - selectedStartHour;
 
     if (hours || videoCount || placements || selectedStudents.length > 0) {
@@ -69,41 +96,48 @@ const PopupRecorder: React.FC = () => {
       const month = currentDate.getMonth();
       const year = currentDate.getFullYear();
       const currentMonth = monthNames[month];
+      const reportDay = `${currentMonth} ${day} ${year}`;
 
       try {
-        const newReport = {
+        const newReportContent = {
           hours: hours,
           videos: parseInt(videoCount, 10),
-          placements:parseInt(placements, 10),
+          placements: parseInt(placements, 10),
           students: selectedStudents,
         };
 
-        const reportsCollectionRef = collection(db, 'Reports');
-        const newReportDocRef = doc(reportsCollectionRef, `${currentMonth} ${year}`);
-        const reportDay = `${currentMonth} ${day} ${year}`;
+        const newReport = {
+          [reportDay]: newReportContent,
+        };
 
+        const newReportDocRef = doc(db, auth.currentUser?.uid, "Reports");
         const newReportDocSnapshot = await getDoc(newReportDocRef);
 
+
         if (!newReportDocSnapshot.exists()) {
-          // Create the month-year document if it doesn't exist
+          // Create the Reports document if it doesn't exist
           await setDoc(newReportDocRef, {});
         }
 
         // Get the existing report object inside the main object
-        const existingReports = newReportDocSnapshot.data();
+        const existingData = newReportDocSnapshot.data()|| {};
 
-        // Create a new object inside the main object with the report for the current day
-        const updatedReports = {
-          ...existingReports,
-          [reportDay]: newReport,
+        // Check if the report day already exists in the current month-year object
+        const currentMonthData = existingData[`${currentMonth} ${year}`];
+        const updatedData = {
+          ...existingData,
+          [`${currentMonth} ${year}`]: {
+            ...(currentMonthData || {}), // Copy existing data if it exists
+            ...newReport, // Add or update the new report day data
+          },
         };
 
         // Update the month-year document with the updated reports object
-        await setDoc(newReportDocRef, updatedReports);
+        await setDoc(newReportDocRef, updatedData);
 
         // Reset the input fields after successful addition
-        setSelectedStart('Open (6am - 7pm)');
-        setSelectedStop('Open (6am - 7pm)');
+        setSelectedStart('Select');
+        setSelectedStop('Select');
         setVideoCount('');
         setPlacements('');
         setSelectedStudents([]);
@@ -122,24 +156,29 @@ const PopupRecorder: React.FC = () => {
   };
 
 
-
   return (
     <div className="whole-container">
       <div className="popup text-white rounded">
         <form onSubmit={handleRecordReport}>
-          <h2>Activity Form</h2>
+          <h2>Record Report</h2>
           <SecondaryLabel
             text={labels.starth}
             array={times}
             onClick={handleStartSelection}
             value={selectedStart}
+            disabled={selectedStart === 'Select'} // Disable the stop hour selection if the start hour is not selected
           />
-          <SecondaryLabel
-            text={labels.stoph}
-            array={times}
-            onClick={handleStopSelection}
-            value={selectedStop}
-          />
+          {selectedStart !== 'Select' && (
+            <SecondaryLabel
+              text={labels.stoph}
+              array={times.filter((time) => {
+                const timeIn24HourFormat = convertTimeToHours(time);
+                return timeIn24HourFormat > selectedStartHour;
+              })} // Filter out times that are later than the selected start hour
+              onClick={handleStopSelection}
+              value={selectedStop}
+            />
+          )}
           <PrimaryLabel
             text={labels.video}
             inputType="number"
@@ -152,7 +191,7 @@ const PopupRecorder: React.FC = () => {
             value={placements}
             onChange={handlePlacements}
           />
-          <SecondaryLabel
+          <SecondaryLabel2
             text={labels.selecteds}
             array={[]}
             onChange={handleStudentSelection}
