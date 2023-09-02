@@ -12,6 +12,7 @@ const SubmitReport: React.FC = () => {
 
   const toggleMonthView = () => {
     setShowCurrentMonth(!showCurrentMonth);
+    
   };
 
   return (
@@ -22,17 +23,17 @@ const SubmitReport: React.FC = () => {
             className={`month-switch-item ${showCurrentMonth ? 'active' : ''}`}
             onClick={() => toggleMonthView()}
           >
-            Current Month
+            This Month
           </div>
           <div
             className={`month-switch-item ${showCurrentMonth ? '' : 'active'}`}
             onClick={() => toggleMonthView()}
           >
-            Previous Month
+            Last Month
           </div>
 
         </div>
-        <div className={`month-container ${showCurrentMonth ? 'current' : 'previous'}`}>
+        <div className={`month-container ${showCurrentMonth ? '' : 'hidden'}`}>
           {showCurrentMonth ? <CurrentMonth /> : <PreviousMonth />}
         </div>
       </div>

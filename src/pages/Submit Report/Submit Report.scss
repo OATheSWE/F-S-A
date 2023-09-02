@@ -22,19 +22,19 @@
     }
 
     .month-container {
-      overflow: hidden;
-      transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    }
-
-    .current {
-      height: auto;
+      position: relative;
       opacity: 1;
+      transform: translateY(0);
+      transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
     }
     
-    .previous {
+    .month-container.hidden {
       opacity: 0;
-      height: 0;
+      transform: translateY(-20px);
+      pointer-events: none; /* Hide content during animation */
     }
+    
+    
     
    
   }

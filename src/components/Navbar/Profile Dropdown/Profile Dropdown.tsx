@@ -12,7 +12,7 @@ const ProfileDropdown: React.FC = () => {
     const [isMenuVisible, setMenuVisible] = useState(false);
     const { logout } = useAuth();
     const auth  = useAuth();
-    const [userName, setUserName] = useState("");
+    const [userName, setUserName] = useState("User");
  
 
     useEffect(() => {

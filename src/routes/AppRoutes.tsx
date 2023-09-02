@@ -5,6 +5,7 @@ import {
   LandingPage,
   LogIn,
   NewStudents,
+  PhoneAuth,
   PopupRecorder,
   Report,
   Settings,
@@ -15,16 +16,15 @@ import {
 } from "../pages";
 import { useAuth } from "../AuthContext";
 
-
 const AppRoutes = () => {
   const [activeRoute, setActiveRoute] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const { isAuthenticated } = useAuth(); // Access isAuthenticated from AuthContext
-  const [isLoading, setIsLoading] = useState(true); // Add isLoading state
-  // const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [cameFromSignup, setCameFromSignup] = useState(false); // Track if user came from signup route
 
-  // Get the current location
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Update the active route when navigating
   useEffect(() => {
@@ -35,23 +35,24 @@ const AppRoutes = () => {
     }, 300);
   }, [location]);
 
- 
   useEffect(() => {
-    setIsLoading(false); // Set isLoading to false once component is loaded
+    setIsLoading(false);
   }, []);
 
+  // Check if user came from signup route
+  useEffect(() => {
+    if (location.state && location.state.cameFromSignup) {
+      setCameFromSignup(true);
+    }
+  }, [location.state]);
+
   if (isLoading) {
-    // Render a loading indicator here
     return <div>Loading...</div>;
   }
 
-
-
   return (
     <Routes>
-
       {isAuthenticated ? (
-
         /* MAIN PAGES ROUTES */
         <Route path="/" element={<LandingPage />}>
           <Route
@@ -62,8 +63,7 @@ const AppRoutes = () => {
             path="record-report"
             element={
               <div
-                className={`transition-fade ${activeRoute === "/record-report/" ? "active" : ""
-                  }`}
+                className={`transition-fade ${activeRoute === "/record-report/" ? "active" : ""}`}
               >
                 <div style={{ opacity: isTransitioning ? 0 : 1 }}>
                   <PopupRecorder />
@@ -75,8 +75,7 @@ const AppRoutes = () => {
             path="submit-report"
             element={
               <div
-                className={`transition-fade ${activeRoute === "/submit-report" ? "active" : ""
-                  }`}
+                className={`transition-fade ${activeRoute === "/submit-report" ? "active" : ""}`}
               >
                 <div style={{ opacity: isTransitioning ? 0 : 1 }}>
                   <SubmitReport />
@@ -88,8 +87,7 @@ const AppRoutes = () => {
             path="students"
             element={
               <div
-                className={`transition-fade ${activeRoute === "/students" ? "active" : ""
-                  }`}
+                className={`transition-fade ${activeRoute === "/students" ? "active" : ""}`}
               >
                 <div style={{ opacity: isTransitioning ? 0 : 1 }}>
                   <Students />
@@ -101,8 +99,7 @@ const AppRoutes = () => {
             path="students/new-students"
             element={
               <div
-                className={`transition-fade ${activeRoute === "/students/new-students" ? "active" : ""
-                  }`}
+                className={`transition-fade ${activeRoute === "/students/new-students" ? "active" : ""}`}
               >
                 <div style={{ opacity: isTransitioning ? 0 : 1 }}>
                   <NewStudents />
@@ -118,8 +115,7 @@ const AppRoutes = () => {
             path="settings"
             element={
               <div
-                className={`transition-fade ${activeRoute === "/settings" ? "active" : ""
-                  }`}
+                className={`transition-fade ${activeRoute === "/settings" ? "active" : ""}`}
               >
                 <div style={{ opacity: isTransitioning ? 0 : 1 }}>
                   <Settings />
@@ -129,16 +125,14 @@ const AppRoutes = () => {
           />
         </Route>
       ) : (
-
-        /* LOGIN & SIGN UP PAGES */
+        /* AUTH PAGES */
         <Route path="/">
           <Route index element={<LogIn />} />
           <Route
             path="signup"
             element={
               <div
-                className={`transition-fade ${activeRoute === "/signup" ? "active" : ""
-                  }`}
+                className={`transition-fade ${activeRoute === "/signup" ? "active" : ""}`}
               >
                 <div style={{ opacity: isTransitioning ? 0 : 1 }}>
                   <SignUp />
@@ -146,6 +140,20 @@ const AppRoutes = () => {
               </div>
             }
           />
+          <Route
+            path="verifynumber"
+            element={
+              <div
+                className={`transition-fade ${activeRoute === "/verifynumber" ? "active" : ""}`}
+              >
+                <div style={{ opacity: isTransitioning ? 0 : 1 }}>
+                  <PhoneAuth />
+                </div>
+              </div>
+            }
+          />
+          
+
         </Route>
       )}
 

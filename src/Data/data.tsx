@@ -19,7 +19,8 @@ const labels = {
     treturnv: 'Total Return Visits:',
     tbstudy: 'Total Bible Studies Conducted:',
     sName: 'Student Name:',
-    question: 'Questions Asked:'
+    question: 'Questions Asked:',
+    otp: 'OTP :',
 };
 
 
@@ -42,7 +43,8 @@ const buttons = {
     signup: 'Sign Up',
     add: 'Add',
     submit: 'Submit',
-    update: 'Update'
+    update: 'Update',
+    request: 'Request OTP',
 };
 
 

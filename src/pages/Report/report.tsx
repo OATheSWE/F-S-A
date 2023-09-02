@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
-import { IconImports } from '../../assets';
-import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, collection } from 'firebase/firestore';
-import { db } from '../../firebase-config';
+import React, { useState, useEffect } from "react";
+import { IconImports } from "../../assets";
+import { useNavigate } from "react-router-dom";
+import { doc, getDoc, collection } from "firebase/firestore";
+import { db } from "../../firebase-config";
 import { useAuth } from "../../AuthContext";
+import { monthNames } from "../../Data/data";
 
 const Report: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -14,16 +15,12 @@ const Report: React.FC = () => {
     const [today, setToday] = useState(currentDate.getDate());
     const auth = useAuth();
 
-
     useEffect(() => {
         setToday(today);
     }, [today]);
 
-
-
     //Fetching data from firestore to use in this page
     useEffect(() => {
-
         // Function to fetch the object names from Firestore
         const fetchRecordedDates = async () => {
             try {
@@ -34,28 +31,18 @@ const Report: React.FC = () => {
                 // To get the dates of recorded reports
                 if (reportDocSnapshot.exists()) {
                     const reportData = reportDocSnapshot.data();
-                    const reportDays = Object.keys(reportData).flatMap(month => Object.keys(reportData[month]));
+                    const reportDays = Object.keys(reportData).flatMap((month) =>
+                        Object.keys(reportData[month])
+                    );
                     setRecordedDates(reportDays);
                 }
-
             } catch (error) {
-                console.error('Error fetching recorded dates:', error);
+                console.error("Error fetching recorded dates:", error);
             }
         };
 
         fetchRecordedDates();
     }, [currentDate]);
-
-
-
-    // Function to check if a day has a recorded report
-    const hasRecordedReport = (day: number, year: number) => {
-        const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
-        const dateString = `${currentMonth} ${day} ${year}`;
-        return recordedDates.includes(dateString);
-
-    };
-
 
     // Button to switch to the previous month
     const handlePrevMonth = () => {
@@ -75,6 +62,37 @@ const Report: React.FC = () => {
         });
     };
 
+    // Function to get recorded dates from calendar & compare with dates in firebase
+    const hasRecordedReport = (day: number, month: number, year: number) => {
+        const currentMonth = monthNames[month]; // Get the month name from the month number
+        const dateString = `${currentMonth} ${day} ${year}`;
+        return recordedDates.includes(dateString);
+    };
+
+    // Check for if a report has been recorded for a particular day already.
+    const linkTo = async (day: number, month: number, year: number) => {
+        const reportExists = await hasRecordedReport(day, month, year);
+        if (reportExists) {
+            const confirmDelete = window.confirm(
+                "A report has already been recorded for this day. Do you want to proceed and overwrite it?"
+            );
+            if (!confirmDelete) {
+                return;
+            }
+        }
+
+        const queryParams = new URLSearchParams();
+        const Day = day.toString();
+        const Month = month.toString();
+        queryParams.append("day", Day);
+        queryParams.append("month", Month); // Add the month parameter
+
+        const queryString = queryParams.toString();
+
+        setTimeout(() => {
+            navigate(`/record-report/?${queryString}`, { replace: true });
+        }, 1000);
+    };
 
     // Function to render the calendar
     const renderCalendarDays = () => {
@@ -82,7 +100,7 @@ const Report: React.FC = () => {
         const month = currentDate.getMonth();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const firstDayOfMonth = new Date(year, month, 1).getDay();
-        const today = currentDate.getDate();
+        const today = new Date(); // Get the current date
 
         const days = [];
 
@@ -93,20 +111,25 @@ const Report: React.FC = () => {
 
         // Render days of the month
         for (let i = 1; i <= daysInMonth; i++) {
-            const isCurrentDay = i === today;
-            const dayClass = isCurrentDay ? "calendar-day current-day rounded" : "calendar-day bg-dark rounded";
-            const isPastDay = i > today;
-            const dayStyle = hasRecordedReport(i, year) ? { borderBottom: '2px solid #fff' } : {};
-            const isCurrentMonth = i === year && month;
+            const isCurrentDay =
+                i === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+            const dayClass = isCurrentDay
+                ? "calendar-day current-day rounded"
+                : "calendar-day bg-dark rounded";
+            const isPastDay = new Date(year, month, i) > today;
+            const dayStyle = hasRecordedReport(i, month, year)
+                ? { borderBottom: "2px solid #fff" }
+                : {};
+
             days.push(
                 <div
                     className={isPastDay ? "calendar-day bg-dark rounded" : dayClass}
                     key={i}
                     onClick={() => {
-                        if (isPastDay && isCurrentMonth) {
-                            linkTo(i, year);
+                        if(!isPastDay) {
+                            linkTo(i, month, year);
                         } else {
-                            window.alert("A report cannot be recorded outside of the current month.");
+                            alert("Recording of future reports is not allowed!.");
                         }
                     }}
                     style={dayStyle}
@@ -119,43 +142,26 @@ const Report: React.FC = () => {
         return days;
     };
 
-
-    // Check for if a report has been recorded for a particular day already.
-    const linkTo = async (day: number, year: number) => {
-        const currentDate = new Date(); // Get the current date
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth();
-
-        // Check if the selected day and year are in the current month
-        if (year !== currentYear || currentDate.getMonth() !== currentMonth) {
-            alert("Reports can only be recorded in the current month.");
-            return;
-        }
-
-        const reportExists = await hasRecordedReport(day, year);
-        if (reportExists) {
-            const confirmDelete = window.confirm('A report has already been recorded for this day. Do you want to proceed and overwrite it?');
-            if (!confirmDelete) {
-                return;
-            }
-        }
-
-        setTimeout(() => {
-            navigate(`/record-report/?day=${day}`, { replace: true });
-        }, 1000);
-    };
-
-
     return (
-
         <div className="report text-white">
             <div className="calendar">
                 <div className="calendar-header d-flex rounded">
-                    <div onClick={handlePrevMonth} className="preview-icon rounded-circle">
+                    <div
+                        onClick={handlePrevMonth}
+                        className="preview-icon rounded-circle"
+                    >
                         <IconImports.FaAngleLeft className="icon-profile" />
                     </div>
-                    <span>{currentDate.toLocaleString('default', { month: 'short', year: 'numeric' })}</span>
-                    <div onClick={handleNextMonth} className="preview-icon rounded-circle">
+                    <span>
+                        {currentDate.toLocaleString("default", {
+                            month: "short",
+                            year: "numeric",
+                        })}
+                    </span>
+                    <div
+                        onClick={handleNextMonth}
+                        className="preview-icon rounded-circle"
+                    >
                         <IconImports.FaAngleRight className="icon-profile" />
                     </div>
                 </div>
@@ -173,7 +179,6 @@ const Report: React.FC = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 

@@ -6,7 +6,7 @@ import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase-config';
 import { AuthProvider } from '../../AuthContext';
-
+import CryptoJS from 'crypto-js'
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ const SignUp: React.FC = () => {
   const [service, setService] = useState('');
   const [password, setPassword] = useState('');
   const [isValid, setIsValid] = useState(true);
+  const secretKey = import.meta.env.VITE_APP_SECRET_KEY;
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -84,10 +85,16 @@ const SignUp: React.FC = () => {
         });
       }
 
-      alert('Signup successful! Please log in with your new account.');
 
-      // Navigate to login page
-      navigate("/")
+      const encryptedData1 = CryptoJS.AES.encrypt(userPhoneNumber, secretKey).toString();
+      const encryptedData2 = CryptoJS.AES.encrypt("Yes", secretKey).toString();
+      localStorage.setItem('Phone Number', encryptedData1);
+      localStorage.setItem('Signed Up', encryptedData2);
+
+      alert('Signup successful! Please verify your phone number.');
+
+      // Navigate to phone number verification page
+      navigate("/verifynumber");
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

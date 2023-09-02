@@ -41,6 +41,8 @@ const LogIn: React.FC = () => {
       if (userDocSnapshot.exists()) {
         // Call the login function from the AuthContext
         login();
+        // Check Phone Auth file for more info
+        localStorage.removeItem('Signed Up');
         // User exists, redirect to the home page or any other protected page
         navigate("/");
       } else {

@@ -4,11 +4,12 @@ interface ButtonProps {
   text: string;
   onClick?: (event: React.FormEvent) => void;
   type?: string;
+  disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ text, onClick }) => {
+const Button: React.FC<ButtonProps> = ({ text, onClick, disabled }) => {
   return (
-    <button type="submit" className="rounded" onClick={onClick}>{ text }</button>
+    <button type="submit" className="rounded" onClick={onClick} disabled={disabled}>{ text }</button>
   );
 };
 
