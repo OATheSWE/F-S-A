@@ -52,7 +52,7 @@ const PhoneAuth: React.FC = () => {
             setRecaptchaVerifier(recaptchaVerifier);
       
             // Request OTP using the decrypted phone number
-            const result: ConfirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+            const result: ConfirmationResult = await signInWithPhoneNumber(auth, `+234${phoneNumber}`, recaptchaVerifier);
             setConfirmationResult(result); // Store the ConfirmationResult
       
             // Disable the button and start the countdown timer

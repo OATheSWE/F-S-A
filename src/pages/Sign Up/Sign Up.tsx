@@ -45,10 +45,10 @@ const SignUp: React.FC = () => {
     const userPassword = password;
 
     // Regular expression for validating phone number
-    const phoneRegex = /^\+234\d{9}$/;
+    const phoneRegex = /^\0\d{9}$/;
 
     if (!phoneRegex.test(userPhoneNumber) || !phoneRegex.test(overseerPhoneNumber)) {
-      alert('Please enter valid phone number. eg +234704567890');
+      alert('Please enter a valid phone number. eg 09022345715');
       return;
     }
 
@@ -123,7 +123,7 @@ const SignUp: React.FC = () => {
             inputType="number"
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
-            placeholder="Eg +2349022345715(Use Country Code)"
+            placeholder="Eg 09022345715"
             required={true}
           />
           <PrimaryLabel
