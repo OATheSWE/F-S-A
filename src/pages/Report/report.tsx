@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { IconImports } from "../../assets";
 import { useNavigate } from "react-router-dom";
-import { doc, getDoc, collection } from "firebase/firestore";
-import { db } from "../../firebase-config";
+import { doc, getDoc, collection, addDoc, setDoc } from "firebase/firestore";
+import { db, getTheToken } from "../../firebase-config";
 import { useAuth } from "../../AuthContext";
 import { monthNames } from "../../Data/data";
+
 
 const Report: React.FC = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -14,6 +15,50 @@ const Report: React.FC = () => {
     const [recordedDates, setRecordedDates] = useState<string[]>([]);
     const [today, setToday] = useState(currentDate.getDate());
     const auth = useAuth();
+    const [isToken, setTokenFound] = useState(false);
+
+
+    useEffect(() => {
+        let data;
+
+
+        async function tokenFunc() {
+            data = await getTheToken(setTokenFound)
+            if (data) {
+               
+                const userTokenDoc = doc(db, auth.currentUser?.uid, "UserToken");
+                const userTokensSnapshot = await getDoc(userTokenDoc);
+
+                if (!userTokensSnapshot.exists()) {
+                    await setDoc(userTokenDoc, {
+                        notificationToken: data,
+                    })
+                }
+            }
+            return data;
+        }
+
+        tokenFunc();
+
+    }, [setTokenFound])
+
+    useEffect(() => {
+        const getTokenAndSubscribe = async () => {
+            try {
+                const currentPermission = await Notification.requestPermission();
+                if (currentPermission === 'granted') {
+                    console.log("Notification permission granted.");
+                } else {
+                    console.error('Permission denied for notifications.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        getTokenAndSubscribe();
+    }, []);
+
 
     useEffect(() => {
         setToday(today);
@@ -126,7 +171,7 @@ const Report: React.FC = () => {
                     className={isPastDay ? "calendar-day bg-dark rounded" : dayClass}
                     key={i}
                     onClick={() => {
-                        if(!isPastDay) {
+                        if (!isPastDay) {
                             linkTo(i, month, year);
                         } else {
                             alert("Recording of future reports is not allowed!.");

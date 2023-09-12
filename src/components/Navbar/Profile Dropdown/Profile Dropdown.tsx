@@ -37,7 +37,7 @@ const ProfileDropdown: React.FC = () => {
         fetchName();
     
         
-      }, []); // Empty dependency array means this effect runs once on component mount
+      }, [auth.currentUser?.uid]); // Empty dependency array means this effect runs once on component mount
 
     useEffect(() => {
 

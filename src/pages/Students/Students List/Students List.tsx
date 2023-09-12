@@ -52,7 +52,7 @@ const StudentsList: React.FC = () => {
 
   const handleTraceLocation = (lat: number, lng: number) => {
     setTimeout(() => {
-      window.open(`https://maps.google.com/?q=${lat},${lng}`, '_blank');
+      window.open(`https://google.com/maps/place/?q=${lat},${lng}`, '_blank');
     }, 1500);
 
   };
@@ -91,9 +91,6 @@ const StudentsList: React.FC = () => {
       alert('Student Could Not Be Deleted!');
     }
   };
-
-
-
 
 
   const editStudent = (id: string) => {

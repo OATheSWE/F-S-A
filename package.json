@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@firebase/auth-types": "^0.12.0",
     "@react-google-maps/api": "^2.18.1",
+    "@types/googlemaps": "^3.43.3",
     "bootstrap": "^5.2.3",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.30.0",

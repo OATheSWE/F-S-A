@@ -9,6 +9,7 @@ import { useAuth } from "../../../AuthContext";
 import { useNavigate } from 'react-router-dom';
 
 
+
 const NewStudents: React.FC = () => {
     const [latestName, setLatestName] = useState('');
     const [latestBook, setLatestBook] = useState('');
@@ -16,6 +17,10 @@ const NewStudents: React.FC = () => {
     const [pinLocation, setPinLocation] = useState({ lat: 0, lng: 0 });
     const navigate = useNavigate();
     const auth = useAuth();
+   
+
+
+
 
     useEffect(() => {
         const fetchLatestName = async () => {
@@ -62,6 +67,7 @@ const NewStudents: React.FC = () => {
                 const { latitude, longitude } = position.coords;
                 const pinLocation = { lat: latitude, lng: longitude };
                 setPinLocation(pinLocation);
+                console.log(pinLocation);
                 alert('Location Pinned Successfully!');
             },
             (error) => {
@@ -69,6 +75,8 @@ const NewStudents: React.FC = () => {
             }
         );
     };
+
+
 
 
 
