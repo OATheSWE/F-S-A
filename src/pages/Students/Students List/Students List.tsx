@@ -59,7 +59,7 @@ const StudentsList: React.FC = () => {
   };
 
   const callStudent = (phoneNumber: string) => {
-    const telephoneUrl = `tel:+234${phoneNumber}`;
+    const telephoneUrl = `tel:${phoneNumber}`;
     setTimeout(() => {
       window.open(telephoneUrl, '_blank');
     }, 400);
