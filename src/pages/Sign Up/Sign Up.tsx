@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { buttons, labels } from '../../Data/data';
-import { PrimaryLabel, Button, Footer } from '../../components';
+import { PrimaryLabel, Button, Footer, Toast } from '../../components';
 import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase-config';
@@ -16,6 +16,28 @@ const SignUp: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isValid, setIsValid] = useState(true);
   const secretKey = import.meta.env.VITE_APP_SECRET_KEY;
+  const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
+  const [toast, showToast] = useState(false)
+
+
+  const displayToast = () => {
+    showToast(true);
+  }
+
+  // Function to add a new alert message
+  const addAlert = (message: string) => {
+    const newAlert = {
+      id: Date.now(), // Unique identifier (you can use a library for better uniqueness)
+      message: message,
+    };
+    setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
+  };
+
+  // Function to remove an alert by its ID
+  const removeAlert = (id: number) => {
+    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
+  };
+
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -48,7 +70,8 @@ const SignUp: React.FC = () => {
     const phoneRegex = /^0[789][01]\d{8}$/;
 
     if (!phoneRegex.test(userPhoneNumber) || !phoneRegex.test(overseerPhoneNumber)) {
-      alert('Please enter a valid phone number. eg 09022345715');
+      displayToast();
+      addAlert('Please enter a valid phone number. eg 09022345715');
       return;
     }
 
@@ -56,12 +79,14 @@ const SignUp: React.FC = () => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)/;
 
     if (!passwordRegex.test(userPassword)) {
-      alert('Password must contain at least one letter and one number.');
+      displayToast();
+      addAlert('Password must contain at least one letter and one number.');
       return;
     }
 
     if (!isValid) {
-      alert('Username cannot contain spaces.');
+      displayToast();
+      addAlert('Username cannot contain spaces.');
       return;
     }
 
@@ -76,7 +101,7 @@ const SignUp: React.FC = () => {
       const userDocSnapshot = await getDoc(userDocRef);
 
       if (!userDocSnapshot.exists()) {
-        // Create the month-ye if it doesn't exist
+        // Create the month-year if it doesn't exist
         await setDoc(userDocRef, {
           userName,
           userPhoneNumber,
@@ -91,15 +116,20 @@ const SignUp: React.FC = () => {
       localStorage.setItem('Phone Number', encryptedData1);
       localStorage.setItem('Signed Up', encryptedData2);
 
-      alert('Signup successful! Please verify your phone number.');
+      displayToast();
+
+      addAlert('Signup successful! Please verify your phone number.');
 
       // Navigate to phone number verification page
-      navigate("/verifynumber");
+      setTimeout(() => {
+        navigate("/verifynumber");
+      }, 3000);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Error signing up:', error.message);
-      alert('Error signing up. Please try again!.');
+      displayToast();
+      addAlert('Error signing up. Please try again!.');
     }
   };
 
@@ -145,6 +175,15 @@ const SignUp: React.FC = () => {
           <Button text={buttons.signup} />
           <Link to="/">Already have an account?</Link>
         </form>
+        {/* Render alert messages */}
+        {alerts.map((alert) => (
+          <Toast
+            show={toast}
+            key={alert.id}
+            message={alert.message}
+            onClose={() => removeAlert(alert.id)}
+          />
+        ))}
       </div>
       <Footer />
     </div>

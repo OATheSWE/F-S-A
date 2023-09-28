@@ -5,7 +5,7 @@ import { BsFillGearFill, BsSend } from 'react-icons/bs';
 import { TbReport } from 'react-icons/tb';
 import { SlPeople } from 'react-icons/sl';
 import { BiSearchAlt } from 'react-icons/bi';
-import { AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlinePlus, AiTwotonePhone } from 'react-icons/ai';
 import { MdDelete, MdModeEditOutline  } from 'react-icons/md';
 
 const IconImports =  {
@@ -24,6 +24,7 @@ const IconImports =  {
   FaMapMarkerAlt,
   MdDelete,
   MdModeEditOutline,
+  AiTwotonePhone,
 };
 
 export { IconImports }

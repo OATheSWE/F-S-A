@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { buttons, labels, monthNames } from '../../Data/data';
-import { PrimaryLabel, Button } from '../../components';
+import { PrimaryLabel, Button, Toast } from '../../components';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import { useAuth } from "../../AuthContext";
@@ -14,7 +14,29 @@ const PreviousMonth: React.FC = () => {
   const [totalPlacements, setTotalPlacements] = useState(0);
   const [totalReturnVisits, setTotalReturnVisits] = useState(0);
   const [totalBibleStudies, setTotalBibleStudies] = useState(0);
+  const [overseer, setOverseer] = useState("");
   const auth = useAuth();
+  const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
+  const [toast, showToast] = useState(false)
+
+
+  const displayToast = () => {
+    showToast(true);
+  }
+
+  // Function to add a new alert message
+  const addAlert = (message: string) => {
+    const newAlert = {
+      id: Date.now(), // Unique identifier 
+      message: message,
+    };
+    setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
+  };
+
+  // Function to remove an alert by its ID
+  const removeAlert = (id: number) => {
+    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
+  };
 
   
 
@@ -29,6 +51,15 @@ const PreviousMonth: React.FC = () => {
         const reportDocRef = doc(db, auth.currentUser?.uid, "Reports");
 
         const reportDocumentSnapshot = await getDoc(reportDocRef);
+
+        const userInfoDoc = doc(db, auth.currentUser?.uid, "UserInfo");
+        const userInfoSnapshot = await getDoc(userInfoDoc);
+
+        if (userInfoSnapshot.exists()) {
+          const recordedData = userInfoSnapshot.data();
+          setOverseer(recordedData.overseerPhoneNumber);
+        }
+
 
         if (reportDocumentSnapshot.exists()) {
           const recordedData = reportDocumentSnapshot.data();
@@ -100,7 +131,7 @@ const PreviousMonth: React.FC = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        alert('Cannot Fetch Feild Service Data For The Month!');
+        addAlert('Cannot Fetch Feild Service Data!');
       }
     };
 
@@ -118,7 +149,7 @@ const PreviousMonth: React.FC = () => {
     const gettingMonth =  currentDate.getMonth() === 0 ? 11 : currentDate.getMonth() - 1;
     const previousMonth = monthNames[gettingMonth];
 
-    const phoneNumber = '+2347066463731'; // Replace this with the actual phone number
+    const phoneNumber = overseer; // Phone Number of Service Overseer
 
     // Check if all inputs are equal to zero or if at least one input is greater than zero
     const hasNonZeroInput = totalHours > 0 || totalVideos > 0 || totalPlacements > 0 || totalReturnVisits > 0 || totalBibleStudies > 0;
@@ -154,8 +185,16 @@ const PreviousMonth: React.FC = () => {
           <PrimaryLabel text={labels.treturnv} inputType='number' readOnly={true} value={totalReturnVisits} />
           <PrimaryLabel text={labels.tbstudy} inputType='number' readOnly={true} value={totalBibleStudies} />
           <Button text={buttons.submit} />
-         
         </form>
+         {/* Render alert messages */}
+         {alerts.map((alert) => (
+          <Toast
+            show={toast}
+            key={alert.id}
+            message={alert.message}
+            onClose={() => removeAlert(alert.id)}
+          />
+        ))}
       </div >
     </div>
   )

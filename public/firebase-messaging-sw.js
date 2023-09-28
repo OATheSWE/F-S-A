@@ -5,6 +5,7 @@ importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js')
 importScripts('https://cdn.jsdelivr.net/npm/workbox-cdn/workbox/workbox-sw.js')
 
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyCP984y2HskeDPyrybPj7LCSutsslByBBM",
   authDomain: "feild-service-assistant.firebaseapp.com",

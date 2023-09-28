@@ -21,6 +21,8 @@ const labels = {
     sName: 'Student Name:',
     question: 'Questions Asked:',
     otp: 'OTP :',
+    studentNumber: 'Student Phone Number:',
+    extraNotes: 'Extra Notes:'
 };
 
 

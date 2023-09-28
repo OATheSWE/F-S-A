@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { labels, buttons, times, monthNames } from '../../../Data/data';
-import { PrimaryLabel, Button, SecondaryLabel } from '../../../components';
+import { PrimaryLabel, Button, SecondaryLabel, Toast } from '../../../components';
 import { collection, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase-config';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -21,6 +21,27 @@ const PopupRecorder: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useAuth();
+  const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
+  const [toast, showToast] = useState(false)
+
+
+  const displayToast = () => {
+    showToast(true);
+  }
+
+  // Function to add a new alert message
+  const addAlert = (message: string) => {
+    const newAlert = {
+      id: Date.now(), // Unique identifier 
+      message: message,
+    };
+    setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
+  };
+
+  // Function to remove an alert by its ID
+  const removeAlert = (id: number) => {
+    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
+  };
 
 
   useEffect(() => {
@@ -108,8 +129,9 @@ const PopupRecorder: React.FC = () => {
 
     // Check if the stop hour is selected
     if (selectedStartHour && (selectedStop === 'Select' || !selectedStop)) {
+      displayToast();
       // Alert user that stophour must be selected
-      alert('Please select the stop hour before adding your report!.');
+      addAlert('Please select the stop hour!');
       return;
     }
 
@@ -158,6 +180,11 @@ const PopupRecorder: React.FC = () => {
         // Update the month-year document with the updated reports object
         await setDoc(newReportDocRef, updatedData);
 
+        displayToast();
+
+        // Optionally, show a success message to the user
+        addAlert('Report added successfully!');
+
         // Reset the input fields after successful addition
         setSelectedStart('Select');
         setSelectedStop('Select');
@@ -165,15 +192,15 @@ const PopupRecorder: React.FC = () => {
         setPlacements('');
         setSelectedStudents([]);
 
-        // Optionally, show a success message to the user
-        alert('Report added successfully!');
-
         // Navigate to the desired page
-        navigate('/');
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
       } catch (error) {
         // Handle error if the report addition fails
         console.error('Error adding report:', error);
-        alert('Could Not Add The Report!');
+        displayToast();
+        addAlert('Could Not Add The Report!');
       }
     }
   };
@@ -224,6 +251,15 @@ const PopupRecorder: React.FC = () => {
           />
           <Button text={buttons.save} />
         </form>
+        {/* Render alert messages */}
+        {alerts.map((alert) => (
+          <Toast
+            show={toast}
+            key={alert.id}
+            message={alert.message}
+            onClose={() => removeAlert(alert.id)}
+          />
+        ))}
       </div>
     </div>
   );

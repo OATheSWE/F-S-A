@@ -17,7 +17,7 @@ body {
     opacity: 1;
 }
   
-
+@import "./bootstrap.min.css";
 
 @import "./components/Navbar/Navbar.scss";
 @import "./components/Footer/Footer.scss";
@@ -30,6 +30,7 @@ body {
 @import "./pages/Students/Students.scss";
 @import "./pages/Students/New Students/New Students.scss";
 @import "./pages/Students/Students List/Students List.scss";
+@import "./components/Dialog Box/DialogBox.scss";
+@import "./components/Toast/Toast.scss";
 
 
-@import "./bootstrap.min.css";

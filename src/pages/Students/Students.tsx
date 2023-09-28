@@ -8,6 +8,7 @@ import { useAuth } from "../../AuthContext";
 
 
 
+
 const Students: React.FC = () => {
   const [studentName, setStudentName] = useState('');
   const navigate = useNavigate();

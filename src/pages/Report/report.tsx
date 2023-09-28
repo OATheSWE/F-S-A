@@ -7,6 +7,7 @@ import { doc, getDoc, collection, addDoc, setDoc } from "firebase/firestore";
 import { db, getTheToken } from "../../firebase-config";
 import { useAuth } from "../../AuthContext";
 import { monthNames } from "../../Data/data";
+import { DialogBox, Toast } from "../../components";
 
 
 const Report: React.FC = () => {
@@ -16,6 +17,20 @@ const Report: React.FC = () => {
     const [today, setToday] = useState(currentDate.getDate());
     const auth = useAuth();
     const [isToken, setTokenFound] = useState(false);
+    const [showConfirmationToast, setShowConfirmationToast] = useState(false);
+    const [selectedDay, setSelectedDay] = useState<number | null>(null);
+    const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+    const [selectedYear, setSelectedYear] = useState<number | null>(null);
+
+
+
+    const hideDeleteConfirmation = () => {
+        setShowConfirmationToast(false);
+    };
+
+    const showDeleteConfirmation = () => {
+        setShowConfirmationToast(true);
+    };
 
 
     useEffect(() => {
@@ -25,7 +40,7 @@ const Report: React.FC = () => {
         async function tokenFunc() {
             data = await getTheToken(setTokenFound)
             if (data) {
-               
+
                 const userTokenDoc = doc(db, auth.currentUser?.uid, "UserToken");
                 const userTokensSnapshot = await getDoc(userTokenDoc);
 
@@ -118,12 +133,11 @@ const Report: React.FC = () => {
     const linkTo = async (day: number, month: number, year: number) => {
         const reportExists = await hasRecordedReport(day, month, year);
         if (reportExists) {
-            const confirmDelete = window.confirm(
-                "A report has already been recorded for this day. Do you want to proceed and overwrite it?"
-            );
-            if (!confirmDelete) {
-                return;
-            }
+            setSelectedDay(day);
+            setSelectedMonth(month);
+            setSelectedYear(year);
+            showDeleteConfirmation();
+            return;
         }
 
         const queryParams = new URLSearchParams();
@@ -188,42 +202,72 @@ const Report: React.FC = () => {
     };
 
     return (
-        <div className="report text-white">
-            <div className="calendar">
-                <div className="calendar-header d-flex rounded">
-                    <div
-                        onClick={handlePrevMonth}
-                        className="preview-icon rounded-circle"
-                    >
-                        <IconImports.FaAngleLeft className="icon-profile" />
+        <>
+            <div className="report text-white">
+                <div className="calendar">
+                    <div className="calendar-header d-flex rounded">
+                        <div
+                            onClick={handlePrevMonth}
+                            className="preview-icon rounded-circle"
+                        >
+                            <IconImports.FaAngleLeft className="icon-profile" />
+                        </div>
+                        <span>
+                            {currentDate.toLocaleString("default", {
+                                month: "short",
+                                year: "numeric",
+                            })}
+                        </span>
+                        <div
+                            onClick={handleNextMonth}
+                            className="preview-icon rounded-circle"
+                        >
+                            <IconImports.FaAngleRight className="icon-profile" />
+                        </div>
                     </div>
-                    <span>
-                        {currentDate.toLocaleString("default", {
-                            month: "short",
-                            year: "numeric",
-                        })}
-                    </span>
-                    <div
-                        onClick={handleNextMonth}
-                        className="preview-icon rounded-circle"
-                    >
-                        <IconImports.FaAngleRight className="icon-profile" />
+                    <div className="calendar-body">
+                        <div className="calendar-weekdays">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                        </div>
+                        <div className="calendar-days">{renderCalendarDays()}</div>
                     </div>
-                </div>
-                <div className="calendar-body">
-                    <div className="calendar-weekdays">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div className="calendar-days">{renderCalendarDays()}</div>
                 </div>
             </div>
-        </div>
+            {/* Render the ConfirmationToast component */}
+            {showConfirmationToast && (
+                <DialogBox
+                    show={showConfirmationToast}
+                    onConfirm={() => {
+                        hideDeleteConfirmation();
+                        if (selectedDay !== null && selectedMonth !== null && selectedYear !== null) {
+                            // Use the selected day, month, and year here
+                            const queryParams = new URLSearchParams();
+                            const Day = selectedDay.toString();
+                            const Month = selectedMonth.toString();
+                            queryParams.append("day", Day);
+                            queryParams.append("month", Month);
+                            const queryString = queryParams.toString();
+                            setTimeout(() => {
+                                navigate(`/record-report/?${queryString}`, { replace: true });
+                            }, 500);
+                        }
+                    }}
+                    onClose={() => {
+                        hideDeleteConfirmation();
+                        setSelectedDay(null);
+                        setSelectedMonth(null);
+                        setSelectedYear(null);
+                    }}
+                    message={`A report has already been recorded for the selected day. Do you want to proceed and overwrite it?`}
+                />
+            )}
+        </>
     );
 };
 

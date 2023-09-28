@@ -1,7 +1,7 @@
 {
     "name": "Field Service Assistant",
     "short_name": "F-S-A",
-    "start_url": "./index.html",
+    "start_url": "/",
     "icons": [
         {
             "src": "icons/manifest-icon-192.maskable.png",
@@ -29,7 +29,5 @@
         }
     ],
     "theme_color": "#191c24",
-    "background_color": "#000000",
-    "display": "Fullscreen",
-    "orientation": "potrait"
+    "background_color": "#000000"
 }

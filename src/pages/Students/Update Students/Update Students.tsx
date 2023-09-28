@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { IconImports } from '../../../assets';
 import { buttons, labels } from '../../../Data/data';
-import { PrimaryLabel, Button } from '../../../components';
+import { PrimaryLabel, Button, Toast } from '../../../components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase-config';
 import { updateDoc, doc, collection, getDoc, setDoc } from 'firebase/firestore';
@@ -13,6 +13,8 @@ type Student = {
   name: string;
   bookOfStudy: string;
   question: string;
+  studentNumber: string;
+  extraNotes: string;
   pinnedLocation: {
     lat: number;
     lng: number;
@@ -26,7 +28,31 @@ const UpdateStudents: React.FC = () => {
   const [updatedBook, setUpdatedBook] = useState('');
   const [updatedQuestion, setUpdatedQuestion] = useState('');
   const [updatedLocation, setUpdatedLocation] = useState({ lat: 0, lng: 0 });
+  const [studentNumber, setStudentNumber] = useState('');
+  const [extraNotes, setExtraNotes] = useState('');
   const auth = useAuth();
+  const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
+  const [toast, showToast] = useState(false)
+
+
+  const displayToast = () => {
+    showToast(true);
+  }
+
+  // Function to add a new alert message
+  const addAlert = (message: string) => {
+    const newAlert = {
+      id: Date.now(), // Unique identifier 
+      message: message,
+    };
+    setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
+  };
+
+  // Function to remove an alert by its ID
+  const removeAlert = (id: number) => {
+    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
+  };
+
 
 
 
@@ -45,6 +71,8 @@ const UpdateStudents: React.FC = () => {
               setUpdatedName(studentData.name);
               setUpdatedBook(studentData.bookOfStudy);
               setUpdatedQuestion(studentData.question);
+              setStudentNumber(studentData.studentNumber);
+              setUpdatedQuestion(studentData.extraNotes);
             } else {
               navigate('/students');
             }
@@ -53,7 +81,9 @@ const UpdateStudents: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('Error fetching student:', error);
+        console.error('Error fetching student data:', error);
+        displayToast();
+        addAlert('Error fetching student data');
       }
     };
 
@@ -69,10 +99,13 @@ const UpdateStudents: React.FC = () => {
         const { latitude, longitude } = position.coords;
         const updatedLocation = { lat: latitude, lng: longitude };
         setUpdatedLocation(updatedLocation);
-        alert('Location Updated Successfully!');
+        displayToast();
+        addAlert('Location Updated Successfully!');
       },
       (error) => {
         console.error('Error getting current location:', error);
+        displayToast();
+        addAlert('Error getting current location');
       }
     );
   };
@@ -97,6 +130,8 @@ const UpdateStudents: React.FC = () => {
               bookOfStudy: updatedBook,
               question: updatedQuestion,
               pinnedLocation: updatedLocation,
+              studentNumber: studentNumber,
+              extraNotes: extraNotes,
               time: (new Date()).getTime()
             };
 
@@ -106,18 +141,26 @@ const UpdateStudents: React.FC = () => {
             // Save the updated studentsData back to Firestore
             await setDoc(studentsDocRef, studentsData);
 
-            navigate("/students");
-            alert('Student Updated Successfully!');
+            setTimeout(() => {
+              navigate("/students");
+            }, 3000)
+
+
+            displayToast();
+            addAlert('Student Updated Successfully!');
           } else {
-            alert('Student not found');
+            displayToast();
+            addAlert('Student not found');
           }
         } else {
-          alert('No students data found');
+          displayToast();
+          addAlert('No student data found');
         }
       }
     } catch (error) {
       console.error("Error updating students: ", error);
-      alert('Student Could Not Be Updated!');
+      displayToast();
+      addAlert('Student Could Not Be Updated!');
     }
   };
 
@@ -134,12 +177,23 @@ const UpdateStudents: React.FC = () => {
             text={labels.bofstudy} inputType="text" value={updatedBook} onChange={(e) => setUpdatedBook(e.target.value)} />
           <PrimaryLabel
             text={labels.question} inputType="text" value={updatedQuestion} onChange={(e) => setUpdatedQuestion(e.target.value)} />
+          <PrimaryLabel text={labels.studentNumber} inputType='text' value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} />
+          <PrimaryLabel text={labels.extraNotes} inputType='text' value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
           <div onClick={handleUpdateLocation} style={{ width: '60%' }}>
             Update Location
             <IconImports.FaMapMarkerAlt className="icon-locate" />
           </div>
           <Button text={buttons.update} />
         </form>
+        {/* Render alert messages */}
+        {alerts.map((alert) => (
+          <Toast
+            show={toast}
+            key={alert.id}
+            message={alert.message}
+            onClose={() => removeAlert(alert.id)}
+          />
+        ))}
       </div>
     </div>
   );

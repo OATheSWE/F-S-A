@@ -30,13 +30,29 @@
     }
 
     form {
-      width: 100%;
+      width: 100%; 
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      
+
+      .main {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .icons {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        row-gap: 0.7rem;
+      }
 
       @media (min-width: 992px) {
         padding: 1.8rem 2rem 2rem 2rem;
        }
 
-      div {
+      .trace {
         border: 2px solid #2c2e33;
         padding: 6px 10px;
         max-width: 70%;
@@ -60,24 +76,12 @@
         }
       }
 
-      div:hover {
+      .trace:hover {
         background-color: $accent-color;
         border-color: $accent-color;
       }
 
-      .icon-delete {
-        position: absolute;
-        top: 1.8rem;
-        right: 1.3rem;
-        font-size: 1.35rem;
-        cursor: pointer;
-        color: $accent-color;
-      }
-
-      .icon-edit {
-        position: absolute;
-        bottom: 2rem;
-        right: 1.3rem;
+      .icon {
         font-size: 1.35rem;
         cursor: pointer;
         color: $accent-color;

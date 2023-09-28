@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { PrimaryLabel, Button } from "../../components";
+import { PrimaryLabel, Button, Toast } from "../../components";
 import { buttons, labels } from "../../Data/data";
 import { db, auth } from "../../firebase-config";
 import { updateDoc, doc, collection, getDoc } from "firebase/firestore";
@@ -21,6 +21,27 @@ const Settings = () => {
   const authenticate = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
+  const [toast, showToast] = useState(false)
+
+
+  const displayToast = () => {
+    showToast(true);
+  }
+
+  // Function to add a new alert message
+  const addAlert = (message: string) => {
+    const newAlert = {
+      id: Date.now(), // Unique identifier (you can use a library for better uniqueness)
+      message: message,
+    };
+    setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
+  };
+
+  // Function to remove an alert by its ID
+  const removeAlert = (id: number) => {
+    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
+  };
 
   
 
@@ -73,7 +94,8 @@ const Settings = () => {
     const phoneRegex = /^\d{11}$/; // Matches 11 digits
 
     if (!phoneRegex.test(userPhoneNumber) || !phoneRegex.test(overseerPhoneNumber)) {
-      alert('Please enter valid phone number (11 digits).');
+      displayToast();
+      addAlert('Please enter valid phone number (11 digits).');
       return;
     }
 
@@ -81,7 +103,8 @@ const Settings = () => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)/;
 
     if (!passwordRegex.test(userPassword)) {
-      alert('Password must contain at least one letter and one number.');
+      displayToast();
+      addAlert('Password must contain at least one letter and one number.');
       return;
     }
 
@@ -118,11 +141,14 @@ const Settings = () => {
         setHasChanges(false);
         setIsEditing(false);
 
-        alert("User info updated successfully!");
+        displayToast();
+
+        addAlert("User info updated successfully!");
       }
     } catch (error) {
       console.error("Error updating user info:", error);
-      alert("An error occurred while updating user info.");
+      displayToast();
+      addAlert("An error occurred while updating user info.");
     }
   };
 
@@ -170,8 +196,6 @@ const Settings = () => {
             name="userName"
             value={userName}
             onChange={handleInputChange}
-            readOnly={true}
-            
           />
           <PrimaryLabel
             text={labels.phonenumber}
@@ -179,7 +203,6 @@ const Settings = () => {
             name="userPhoneNumber"
             value={userPhoneNumber}
             onChange={handleInputChange}
-            readOnly={true}
           />
           <PrimaryLabel
             text={labels.service}
@@ -187,7 +210,6 @@ const Settings = () => {
             name="overseerPhoneNumber"
             value={overseerPhoneNumber}
             onChange={handleInputChange}
-            readOnly={true}
           />
           <PrimaryLabel
             text={labels.password}
@@ -195,10 +217,18 @@ const Settings = () => {
             name="userPassword"
             value={userPassword}
             onChange={handleInputChange}
-            readOnly={true}
           />
-          {/* {hasChanges === true && <Button type="submit" text={buttons.save} />} */}
+          {hasChanges === true && <Button type="submit" text={buttons.save} />}
         </form>
+        {/* Render alert messages */}
+        {alerts.map((alert) => (
+          <Toast
+            show={toast}
+            key={alert.id}
+            message={alert.message}
+            onClose={() => removeAlert(alert.id)}
+          />
+        ))}
       </div>
     </div>
   );
