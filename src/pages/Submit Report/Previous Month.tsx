@@ -164,7 +164,7 @@ const PreviousMonth: React.FC = () => {
 
     // Construct the WhatsApp URL
     const encodedMessage = encodeURIComponent(message);
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    const whatsappURL = `https://wa.me/+234${phoneNumber}?text=${encodedMessage}`;
 
     // Add a delay of 200ms before opening WhatsApp
     setTimeout(() => {
