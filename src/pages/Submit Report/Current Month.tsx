@@ -7,8 +7,9 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import { useAuth } from "../../AuthContext";
 
-
+// Component for displaying and submitting the current month's field service report
 const CurrentMonth: React.FC = () => {
+  // State variables to store various field service metrics
   const [totalHours, setTotalHours] = useState(0);
   const [totalVideos, setTotalVideos] = useState(0);
   const [totalPlacements, setTotalPlacements] = useState(0);
@@ -19,7 +20,7 @@ const CurrentMonth: React.FC = () => {
   const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
   const [toast, showToast] = useState(false)
 
-
+  // Function to display a toast message
   const displayToast = () => {
     showToast(true);
   }
@@ -38,11 +39,6 @@ const CurrentMonth: React.FC = () => {
     setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
   };
 
- 
-
-
-
-
   useEffect(() => {
     // Fetch data from Firestore for the current month and year
     const fetchData = async () => {
@@ -60,7 +56,6 @@ const CurrentMonth: React.FC = () => {
           setOverseer(recordedData.overseerPhoneNumber);
         }
 
-
         const reportDocumentSnapshot = await getDoc(reportDocRef);
 
         if (reportDocumentSnapshot.exists()) {
@@ -70,7 +65,6 @@ const CurrentMonth: React.FC = () => {
           const currentMonthYear = recordedData[`${currentMonth} ${currentYear}`];
 
           if (currentMonthYear) {
-
             // Calculate totals from the recordedData and update state
             let totalHours = 0;
             let totalVideos = 0;
@@ -86,7 +80,6 @@ const CurrentMonth: React.FC = () => {
               totalHours += record.hours || 0;
               totalVideos += record.videos || 0;
               totalPlacements += record.placements || 0;
-              // totalReturnVisits += record.students.length || 0;
 
               // Count each student as one for Total Bible Studies
               if (Array.isArray(record.students)) {
@@ -100,7 +93,6 @@ const CurrentMonth: React.FC = () => {
                 totalReturnVisits += record.students.length;
               }
             });
-
 
             // Calculate Total Bible Studies by adding the number of unique students
             totalBibleStudies = uniqueBibleStudies.size;
@@ -128,21 +120,17 @@ const CurrentMonth: React.FC = () => {
               .catch((error: any) => {
                 console.error('Error creating total object:', error);
               });
-
           }
         }
       } catch (error) {
         console.error('Error fetching data:', error);
         displayToast();
-        addAlert('Cannot Fetch Feild Service Data!');
+        addAlert('Cannot Fetch Field Service Data!');
       }
     };
 
     fetchData();
   }, []);
-
-
-
 
   // Function to handle the "Submit" button click
   const handleWhatsAppSubmit = (e: any) => {
@@ -161,7 +149,7 @@ const CurrentMonth: React.FC = () => {
     if (hasNonZeroInput) {
       message = `My Field Service Report For The Month Of ${curentMonth} - ${totalHours} Hours, ${totalVideos} Videos, ${totalPlacements} Placements, ${totalReturnVisits} Return Visits, ${totalBibleStudies} Bible Studies`;
     } else {
-      message = `I Participated In The Feild Service For The Month Of ${curentMonth}.`;
+      message = `I Participated In The Field Service For The Month Of ${curentMonth}.`;
     }
 
     // Construct the WhatsApp URL
@@ -175,10 +163,11 @@ const CurrentMonth: React.FC = () => {
     }, 400);
   };
 
-
+  // Render the CurrentMonth component
   return (
     <div className="whole-container">
       <div className="popup text-white rounded submit-report">
+        {/* Form for submitting the field service report via WhatsApp */}
         <form onSubmit={handleWhatsAppSubmit}>
           <h2>Submit Report</h2>
           <PrimaryLabel text={labels.thours} inputType='number' readOnly={true} value={totalHours} />
@@ -188,8 +177,8 @@ const CurrentMonth: React.FC = () => {
           <PrimaryLabel text={labels.tbstudy} inputType='number' readOnly={true} value={totalBibleStudies} />
           <Button text={buttons.submit} />
         </form>
-         {/* Render alert messages */}
-         {alerts.map((alert) => (
+        {/* Render alert messages */}
+        {alerts.map((alert) => (
           <Toast
             show={toast}
             key={alert.id}

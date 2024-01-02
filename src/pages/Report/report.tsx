@@ -9,8 +9,8 @@ import { useAuth } from "../../AuthContext";
 import { monthNames } from "../../Data/data";
 import { DialogBox, Toast } from "../../components";
 
-
 const Report: React.FC = () => {
+    // State variables
     const [currentDate, setCurrentDate] = useState(new Date());
     const navigate = useNavigate();
     const [recordedDates, setRecordedDates] = useState<string[]>([]);
@@ -22,41 +22,39 @@ const Report: React.FC = () => {
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
-
-
+    // Function to hide the delete confirmation toast
     const hideDeleteConfirmation = () => {
         setShowConfirmationToast(false);
     };
 
+    // Function to show the delete confirmation toast
     const showDeleteConfirmation = () => {
         setShowConfirmationToast(true);
     };
 
-
+    // useEffect to fetch the user's notification token
     useEffect(() => {
         let data;
 
-
         async function tokenFunc() {
-            data = await getTheToken(setTokenFound)
+            data = await getTheToken(setTokenFound);
             if (data) {
-
                 const userTokenDoc = doc(db, auth.currentUser?.uid, "UserToken");
                 const userTokensSnapshot = await getDoc(userTokenDoc);
 
                 if (!userTokensSnapshot.exists()) {
                     await setDoc(userTokenDoc, {
                         notificationToken: data,
-                    })
+                    });
                 }
             }
             return data;
         }
 
         tokenFunc();
+    }, [setTokenFound]);
 
-    }, [setTokenFound])
-
+    // useEffect to request notification permission
     useEffect(() => {
         const getTokenAndSubscribe = async () => {
             try {
@@ -74,21 +72,18 @@ const Report: React.FC = () => {
         getTokenAndSubscribe();
     }, []);
 
-
+    // useEffect to set today's date
     useEffect(() => {
         setToday(today);
     }, [today]);
 
-    //Fetching data from firestore to use in this page
+    // useEffect to fetch recorded dates from Firestore
     useEffect(() => {
-        // Function to fetch the object names from Firestore
         const fetchRecordedDates = async () => {
             try {
-                // Get the doucment collection & names needed
                 const reportDocRef = doc(db, auth.currentUser?.uid, "Reports");
                 const reportDocSnapshot = await getDoc(reportDocRef);
 
-                // To get the dates of recorded reports
                 if (reportDocSnapshot.exists()) {
                     const reportData = reportDocSnapshot.data();
                     const reportDays = Object.keys(reportData).flatMap((month) =>
@@ -104,7 +99,7 @@ const Report: React.FC = () => {
         fetchRecordedDates();
     }, [currentDate]);
 
-    // Button to switch to the previous month
+    // Function to switch to the previous month
     const handlePrevMonth = () => {
         setCurrentDate((prevDate) => {
             const prevMonth = prevDate.getMonth() - 1;
@@ -113,7 +108,7 @@ const Report: React.FC = () => {
         });
     };
 
-    // Button to switch to the next month
+    // Function to switch to the next month
     const handleNextMonth = () => {
         setCurrentDate((prevDate) => {
             const nextMonth = prevDate.getMonth() + 1;
@@ -122,14 +117,14 @@ const Report: React.FC = () => {
         });
     };
 
-    // Function to get recorded dates from calendar & compare with dates in firebase
+    // Function to check if a report has been recorded for a specific day
     const hasRecordedReport = (day: number, month: number, year: number) => {
-        const currentMonth = monthNames[month]; // Get the month name from the month number
+        const currentMonth = monthNames[month];
         const dateString = `${currentMonth} ${day} ${year}`;
         return recordedDates.includes(dateString);
     };
 
-    // Check for if a report has been recorded for a particular day already.
+    // Function to navigate to the report recording page
     const linkTo = async (day: number, month: number, year: number) => {
         const reportExists = await hasRecordedReport(day, month, year);
         if (reportExists) {
@@ -144,7 +139,7 @@ const Report: React.FC = () => {
         const Day = day.toString();
         const Month = month.toString();
         queryParams.append("day", Day);
-        queryParams.append("month", Month); // Add the month parameter
+        queryParams.append("month", Month);
 
         const queryString = queryParams.toString();
 
@@ -153,22 +148,20 @@ const Report: React.FC = () => {
         }, 1000);
     };
 
-    // Function to render the calendar
+    // Function to render the calendar days
     const renderCalendarDays = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const firstDayOfMonth = new Date(year, month, 1).getDay();
-        const today = new Date(); // Get the current date
+        const today = new Date();
 
         const days = [];
 
-        // Fill empty days before the first day of the month
         for (let i = 0; i < firstDayOfMonth; i++) {
             days.push(<div className="calendar-day empty" key={`empty-${i}`} />);
         }
 
-        // Render days of the month
         for (let i = 1; i <= daysInMonth; i++) {
             const isCurrentDay =
                 i === today.getDate() && month === today.getMonth() && year === today.getFullYear();
@@ -203,6 +196,7 @@ const Report: React.FC = () => {
 
     return (
         <>
+            {/* Render the calendar component */}
             <div className="report text-white">
                 <div className="calendar">
                     <div className="calendar-header d-flex rounded">
@@ -239,6 +233,7 @@ const Report: React.FC = () => {
                     </div>
                 </div>
             </div>
+
             {/* Render the ConfirmationToast component */}
             {showConfirmationToast && (
                 <DialogBox

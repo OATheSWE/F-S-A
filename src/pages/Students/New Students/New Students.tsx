@@ -8,24 +8,25 @@ import { collection, getDocs, query, orderBy, limit, updateDoc, doc, getDoc, onS
 import { useAuth } from "../../../AuthContext";
 import { useNavigate } from 'react-router-dom';
 
-
-
 const NewStudents: React.FC = () => {
+    // State variables for handling form input
     const [latestName, setLatestName] = useState('');
     const [latestBook, setLatestBook] = useState('');
     const [latestQuestion, setLatestQuestion] = useState('');
     const [studentNumber, setStudentNumber] = useState('');
     const [extraNotes, setExtraNotes] = useState('');
     const [pinLocation, setPinLocation] = useState({ lat: 0, lng: 0 });
+
+    // Hooks for navigation, authentication, and alert management
     const navigate = useNavigate();
     const auth = useAuth();
     const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
-    const [toast, showToast] = useState(false)
+    const [toast, showToast] = useState(false);
 
-
+    // Function to display the toast
     const displayToast = () => {
         showToast(true);
-    }
+    };
 
     // Function to add a new alert message
     const addAlert = (message: string) => {
@@ -41,11 +42,7 @@ const NewStudents: React.FC = () => {
         setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
     };
 
-
-
-
-
-
+    // Effect to fetch the latest student's name
     useEffect(() => {
         const fetchLatestName = async () => {
             if (auth.currentUser) {
@@ -58,6 +55,7 @@ const NewStudents: React.FC = () => {
                     let latestStudentKey = null;
                     let latestTime = 0; // Initialize to 0 or a very small value
 
+                    // Find the latest student based on the time property
                     for (const studentKey in studentData) {
                         if (studentData.hasOwnProperty(studentKey)) {
                             const student = studentData[studentKey];
@@ -65,25 +63,20 @@ const NewStudents: React.FC = () => {
                                 latestTime = student.time;
                                 latestStudentKey = studentKey;
                             }
-
                         }
                     }
 
                     if (latestStudentKey) {
-                        setLatestName(studentData[latestStudentKey].name)
+                        setLatestName(studentData[latestStudentKey].name);
                     }
-
-
-
                 }
             }
-        }
+        };
 
         fetchLatestName();
-    }, []);
+    }, [auth.currentUser]);
 
-
-
+    // Function to handle pinning the user's location
     const handlePinLocation = () => {
         // Use the Geolocation API to retrieve the user's current location
         navigator.geolocation.getCurrentPosition(
@@ -98,20 +91,19 @@ const NewStudents: React.FC = () => {
             (error) => {
                 console.error('Error getting current location:', error);
                 displayToast();
-                addAlert('Couldnt get the current location!');
+                addAlert('Could not get the current location!');
             }
         );
     };
 
-
-
-
-
+    // Function to handle adding a new student
     const handleAddStudent = async (event: React.FormEvent) => {
         event.preventDefault();
 
+        // Check if necessary data is provided
         if (latestName || latestBook || pinLocation || latestQuestion || studentNumber || extraNotes) {
             try {
+                // Create a new student object
                 const newStudent = {
                     name: latestName,
                     bookOfStudy: latestBook,
@@ -135,7 +127,7 @@ const NewStudents: React.FC = () => {
                 let latestStudentKey = null;
                 let latestTime = 0;
 
-                // Find the latest object based on the time property
+                // Find the latest student based on the time property
                 for (const studentKey in existingStudents) {
                     if (existingStudents.hasOwnProperty(studentKey)) {
                         const student = existingStudents[studentKey];
@@ -147,7 +139,6 @@ const NewStudents: React.FC = () => {
                 }
 
                 if (latestStudentKey) {
-
                     const updatedStudents = {
                         ...existingStudents,
                         [latestStudentKey]: newStudent,
@@ -159,7 +150,6 @@ const NewStudents: React.FC = () => {
                     displayToast();
                     addAlert('Student added successfully!');
 
-
                     // Reset the input fields after successful update
                     setLatestName('');
                     setLatestBook('');
@@ -167,7 +157,7 @@ const NewStudents: React.FC = () => {
                     setExtraNotes('');
                     setStudentNumber('');
 
-                    // Navigate to desired page
+                    // Navigate to the desired page
                     setTimeout(() => {
                         navigate('/students');
                     }, 3000);
@@ -181,23 +171,26 @@ const NewStudents: React.FC = () => {
         }
     };
 
-
-
-
-
     return (
         <div className="whole-container">
             <div className="popup text-white rounded new-students">
                 <form onSubmit={handleAddStudent}>
+                    {/* Render PrimaryLabel for student's name input */}
                     <PrimaryLabel text={labels.sName} inputType='text' value={latestName} onChange={(e) => setLatestName(e.target.value)} />
+                    {/* Render PrimaryLabel for book of study input */}
                     <PrimaryLabel text={labels.bofstudy} inputType='text' value={latestBook} onChange={(e) => setLatestBook(e.target.value)} />
+                    {/* Render PrimaryLabel for student's question input */}
                     <PrimaryLabel text={labels.question} inputType='text' value={latestQuestion} onChange={(e) => setLatestQuestion(e.target.value)} />
+                    {/* Render PrimaryLabel for student number input */}
                     <PrimaryLabel text={labels.studentNumber} inputType='text' value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} />
+                    {/* Render PrimaryLabel for extra notes input */}
                     <PrimaryLabel text={labels.extraNotes} inputType='text' value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
+                    {/* Button to pin the location */}
                     <div onClick={handlePinLocation}>
                         Pin Location
                         <IconImports.FaMapMarkerAlt className="icon-locate" />
                     </div>
+                    {/* Render Button for adding a new student */}
                     <Button text={buttons.add} />
                 </form>
                 {/* Render alert messages */}
@@ -210,9 +203,8 @@ const NewStudents: React.FC = () => {
                     />
                 ))}
             </div>
-
         </div>
     );
-}
+};
 
 export default NewStudents;

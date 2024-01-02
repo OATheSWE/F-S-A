@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">F-S-A</string>
+    <string name="title_activity_main">F-S-A</string>
+    <string name="package_name">com.feildserviceassistant.app</string>
+    <string name="custom_url_scheme">com.feildserviceassistant.app</string>
+</resources>

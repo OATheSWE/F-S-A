@@ -13,12 +13,11 @@ const LogIn: React.FC = () => {
   const [password, setPassword] = useState("");
   const { login } = useAuth(); // Access the login function from the AuthContext
   const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
-  const [toast, showToast] = useState(false)
-
+  const [toast, showToast] = useState(false);
 
   const displayToast = () => {
     showToast(true);
-  }
+  };
 
   // Function to add a new alert message
   const addAlert = (message: string) => {

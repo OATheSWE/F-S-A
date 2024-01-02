@@ -7,11 +7,8 @@ import { useAuth } from "../../AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User as FirebaseAuthUser, updateEmail, updatePassword } from "firebase/auth";
 
-
-
-
-
 const Settings = () => {
+  // State variables
   const [userName, setUsername] = useState("");
   const [userPhoneNumber, setPhoneNumber] = useState("");
   const [overseerPhoneNumber, setOverseerNumber] = useState("");
@@ -22,9 +19,9 @@ const Settings = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
-  const [toast, showToast] = useState(false)
+  const [toast, showToast] = useState(false);
 
-
+  // Function to display the toast
   const displayToast = () => {
     showToast(true);
   }
@@ -43,16 +40,12 @@ const Settings = () => {
     setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
   };
 
-  
-
+  // useEffect to fetch user info from the database and populate state variables
   useEffect(() => {
-    // Fetch user info from the database here and populate the state variables
     const fetchUserInfo = async () => {
       try {
         const userCollectionRef = collection(db, authenticate.currentUser?.uid);
-       
         const userDocRef = doc(userCollectionRef, "UserInfo");
-
         const userDocSnapshot = await getDoc(userDocRef);
 
         if (userDocSnapshot.exists()) {
@@ -72,21 +65,19 @@ const Settings = () => {
     setHasChanges(false);
   }, []); // Empty dependency array means this effect runs once on component mount
 
-
+  // Event handler for input changes
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-  
+
     if (name === "userName") setUsername(value);
     if (name === "userPhoneNumber") setPhoneNumber(value);
     if (name === "overseerPhoneNumber") setOverseerNumber(value);
     if (name === "userPassword") setPassword(value);
-  
+
     setHasChanges(true);
   };
-  
 
-
-
+  // Event handler for saving changes
   const handleSave = async (e: any) => {
     e.preventDefault();
 
@@ -95,7 +86,7 @@ const Settings = () => {
 
     if (!phoneRegex.test(userPhoneNumber) || !phoneRegex.test(overseerPhoneNumber)) {
       displayToast();
-      addAlert('Please enter valid phone number (11 digits).');
+      addAlert('Please enter a valid phone number (11 digits).');
       return;
     }
 
@@ -111,12 +102,10 @@ const Settings = () => {
     try {
       // Update user info in the database
       const userDocRef = doc(db, authenticate.currentUser?.uid, "UserInfo");
-
       const userDocSnapshot = await getDoc(userDocRef);
 
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
-        // Compare the fetched values with the entered values
         const emailChanged = userName !== userData.userName;
         const passwordChanged = userPassword !== userData.userPassword;
 
@@ -142,7 +131,6 @@ const Settings = () => {
         setIsEditing(false);
 
         displayToast();
-
         addAlert("User info updated successfully!");
       }
     } catch (error) {
@@ -152,6 +140,7 @@ const Settings = () => {
     }
   };
 
+  // Function to handle email update
   const handleEmailUpdate = async () => {
     const user = authenticate.currentUser;
     if (!user) {
@@ -162,13 +151,13 @@ const Settings = () => {
     try {
       const newEmail = `${userName}@example.com`
       await updateEmail(user as FirebaseAuthUser, newEmail);
-      console.log(user);
       // Email updated successfully
     } catch (error) {
       console.error('Error updating email:', error);
     }
   };
 
+  // Function to handle password update
   const handlePasswordUpdate = async () => {
     const user = authenticate.currentUser;
     if (!user) {
@@ -190,6 +179,7 @@ const Settings = () => {
       <div className="popup text-white rounded settings">
         <form onSubmit={handleSave}>
           <h2>Settings</h2>
+          {/* Render PrimaryLabel for username input */}
           <PrimaryLabel
             text={labels.username}
             inputType="text"
@@ -197,6 +187,7 @@ const Settings = () => {
             value={userName}
             onChange={handleInputChange}
           />
+          {/* Render PrimaryLabel for user phone number input */}
           <PrimaryLabel
             text={labels.phonenumber}
             inputType="number"
@@ -204,6 +195,7 @@ const Settings = () => {
             value={userPhoneNumber}
             onChange={handleInputChange}
           />
+          {/* Render PrimaryLabel for overseer phone number input */}
           <PrimaryLabel
             text={labels.service}
             inputType="number"
@@ -211,6 +203,7 @@ const Settings = () => {
             value={overseerPhoneNumber}
             onChange={handleInputChange}
           />
+          {/* Render PrimaryLabel for user password input */}
           <PrimaryLabel
             text={labels.password}
             inputType="text"
@@ -232,7 +225,6 @@ const Settings = () => {
       </div>
     </div>
   );
-
 };
 
 export default Settings;

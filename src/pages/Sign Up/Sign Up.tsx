@@ -6,7 +6,7 @@ import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase-config';
 import { AuthProvider } from '../../AuthContext';
-import CryptoJS from 'crypto-js'
+import CryptoJS from 'crypto-js';
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -17,12 +17,12 @@ const SignUp: React.FC = () => {
   const [isValid, setIsValid] = useState(true);
   const secretKey = import.meta.env.VITE_APP_SECRET_KEY;
   const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
-  const [toast, showToast] = useState(false)
+  const [toast, showToast] = useState(false);
 
-
+  // Function to display the toast
   const displayToast = () => {
     showToast(true);
-  }
+  };
 
   // Function to add a new alert message
   const addAlert = (message: string) => {
@@ -38,26 +38,29 @@ const SignUp: React.FC = () => {
     setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
   };
 
-
+  // Event handler for username change
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
     setIsValid(!email.includes(' '));
   };
 
+  // Event handler for phone number change
   const handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputPhoneNumber = event.target.value;
     setPhoneNumber(inputPhoneNumber);
-    // setIsValidNumber(isValidPhoneNumber(inputPhoneNumber));
   };
 
+  // Event handler for service change
   const handleServiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setService(event.target.value);
   };
 
+  // Event handler for password change
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
+  // Event handler for signup form submission
   const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -96,7 +99,6 @@ const SignUp: React.FC = () => {
 
       const userCollectionRef = collection(db, userCredential.user?.uid);
       const userDocRef = doc(userCollectionRef, "UserInfo");
-      
 
       const userDocSnapshot = await getDoc(userDocRef);
 
@@ -106,11 +108,11 @@ const SignUp: React.FC = () => {
           userName,
           userPhoneNumber,
           overseerPhoneNumber,
-          userPassword
+          userPassword,
         });
       }
 
-
+      // Encrypt and store phone number and signup status in local storage
       const encryptedData1 = CryptoJS.AES.encrypt(userPhoneNumber, secretKey).toString();
       const encryptedData2 = CryptoJS.AES.encrypt("Yes", secretKey).toString();
       localStorage.setItem('Phone Number', encryptedData1);
@@ -133,60 +135,66 @@ const SignUp: React.FC = () => {
     }
   };
 
-
   return (
-    <AuthProvider >
-    <div className="whole-container">
-      <div className="popup text-white rounded signup">
-        <form onSubmit={handleSignupSubmit}>
-          <h2>Sign Up</h2>
-          <PrimaryLabel
-            text={labels.username}
-            inputType="text"
-            value={email}
-            onChange={handleUsernameChange}
-            placeholder="Eg chioma12"
-            required={true}
-          />
-          <PrimaryLabel
-            text={labels.phonenumber}
-            inputType="number"
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange}
-            placeholder="Eg 09022345715"
-            required={true}
-          />
-          <PrimaryLabel
-            text={labels.service}
-            inputType="number"
-            value={service}
-            onChange={handleServiceChange}
-            placeholder="Eg 09022345715"
-            required={true}
-          />
-          <PrimaryLabel
-            text={labels.password}
-            inputType="password"
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="Eg 22224e"
-            required={true}
-          />
-          <Button text={buttons.signup} />
-          <Link to="/">Already have an account?</Link>
-        </form>
-        {/* Render alert messages */}
-        {alerts.map((alert) => (
-          <Toast
-            show={toast}
-            key={alert.id}
-            message={alert.message}
-            onClose={() => removeAlert(alert.id)}
-          />
-        ))}
+    <AuthProvider>
+      <div className="whole-container">
+        <div className="popup text-white rounded signup">
+          <form onSubmit={handleSignupSubmit}>
+            <h2>Sign Up</h2>
+            {/* Render PrimaryLabel for username input */}
+            <PrimaryLabel
+              text={labels.username}
+              inputType="text"
+              value={email}
+              onChange={handleUsernameChange}
+              placeholder="Eg chioma12"
+              required={true}
+            />
+            {/* Render PrimaryLabel for user phone number input */}
+            <PrimaryLabel
+              text={labels.phonenumber}
+              inputType="number"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+              placeholder="Eg 09022345715"
+              required={true}
+            />
+            {/* Render PrimaryLabel for overseer phone number input */}
+            <PrimaryLabel
+              text={labels.service}
+              inputType="number"
+              value={service}
+              onChange={handleServiceChange}
+              placeholder="Eg 09022345715"
+              required={true}
+            />
+            {/* Render PrimaryLabel for user password input */}
+            <PrimaryLabel
+              text={labels.password}
+              inputType="password"
+              value={password}
+              onChange={handlePasswordChange}
+              placeholder="Eg 22224e"
+              required={true}
+            />
+            {/* Render Button for signup */}
+            <Button text={buttons.signup} />
+            {/* Render Link to login page */}
+            <Link to="/">Already have an account?</Link>
+          </form>
+          {/* Render alert messages */}
+          {alerts.map((alert) => (
+            <Toast
+              show={toast}
+              key={alert.id}
+              message={alert.message}
+              onClose={() => removeAlert(alert.id)}
+            />
+          ))}
+        </div>
+        {/* Render Footer */}
+        <Footer />
       </div>
-      <Footer />
-    </div>
     </AuthProvider>
   );
 };

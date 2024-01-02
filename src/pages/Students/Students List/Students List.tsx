@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../../AuthContext";
 import { DialogBox, Toast } from '../../../components';
 
+// Define the structure of a student
 type Student = {
   studentId: string;
   id: string;
@@ -20,19 +21,21 @@ type Student = {
   };
 };
 
+// Functional component for displaying a list of students
 const StudentsList: React.FC = () => {
+  // State variables for managing students, navigation, confirmation toast, student to delete, and alerts
   const [students, setStudents] = useState<Student[]>([]);
   const navigate = useNavigate();
   const auth = useAuth();
   const [showConfirmationToast, setShowConfirmationToast] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
   const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
-  const [toast, showToast] = useState(false)
+  const [toast, showToast] = useState(false);
 
-
+  // Function to display the toast
   const displayToast = () => {
     showToast(true);
-  }
+  };
 
   // Function to add a new alert message
   const addAlert = (message: string) => {
@@ -48,26 +51,26 @@ const StudentsList: React.FC = () => {
     setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
   };
 
-
+  // Function to hide the delete confirmation toast
   const hideDeleteConfirmation = () => {
     setShowConfirmationToast(false);
   };
 
+  // Function to show the delete confirmation toast for a specific student
   const showDeleteConfirmation = (student: Student) => {
     setStudentToDelete(student);
     setShowConfirmationToast(true);
   };
 
+  // Function to initiate a call to a student's phone number
   const callStudent = (phoneNumber: string) => {
     const telephoneUrl = `tel:${phoneNumber}`;
     setTimeout(() => {
       window.open(telephoneUrl, '_blank');
     }, 400);
-  }
+  };
 
-
-
-
+  // Effect to fetch the list of students when the component mounts or when the user changes
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -78,6 +81,7 @@ const StudentsList: React.FC = () => {
           const studentsData = studentsDocSnapshot.data();
           const studentsArray: Student[] = [];
 
+          // Convert the student data into an array
           for (const key in studentsData) {
             const studentData = studentsData[key];
             studentsArray.push({
@@ -96,13 +100,14 @@ const StudentsList: React.FC = () => {
     fetchStudents();
   }, [auth.currentUser]);
 
+  // Function to handle tracing the location of a student
   const handleTraceLocation = (lat: number, lng: number) => {
     setTimeout(() => {
       window.open(`https://google.com/maps/place/?q=${lat},${lng}`, '_blank');
     }, 1500);
-
   };
 
+  // Function to delete a student
   const deleteStudent = async (studentId: string) => {
     try {
       const studentsDocRef = doc(db, auth.currentUser.uid, 'Students');
@@ -126,6 +131,7 @@ const StudentsList: React.FC = () => {
 
           await setDoc(studentsDocRef, updatedStudents);
 
+          // Update the local state to reflect the changes
           setStudents((prevStudents) => prevStudents.filter((student) => student.id !== studentId));
         }
       }
@@ -136,21 +142,23 @@ const StudentsList: React.FC = () => {
     }
   };
 
-
+  // Function to navigate to the edit student page
   const editStudent = (id: string) => {
     navigate(`/students/update-students/${id}`);
   };
 
-
+  // Render the list of students
   return (
     <div className="list-container">
       {students.map((student, index) => (
         <div className="popup text-white rounded students-list" key={index}>
           <form>
+            {/* Render student details */}
             <div className="main">
               <h3>{student.name}</h3>
               <p>{student.bookOfStudy}</p>
               <p>{student.question}</p>
+              {/* Render trace location button if location is available */}
               {student.pinnedLocation && student.pinnedLocation.lat > 0 && student.pinnedLocation.lng > 0 ? (
                 <div className="trace" onClick={() => handleTraceLocation(student.pinnedLocation.lat, student.pinnedLocation.lng)}>
                   Trace Location
@@ -158,6 +166,7 @@ const StudentsList: React.FC = () => {
                 </div>
               ) : null}
             </div>
+            {/* Render icons for calling, deleting, and editing */}
             <div className="icons">
               {student.studentNumber && (
                 <IconImports.AiTwotonePhone className="icon" onClick={() => callStudent(student.studentNumber)} />
@@ -165,7 +174,6 @@ const StudentsList: React.FC = () => {
               <IconImports.MdDelete className="icon" onClick={() => showDeleteConfirmation(student)} />
               <IconImports.MdModeEditOutline className="icon" onClick={() => editStudent(student.id)} />
             </div>
-
           </form>
           {/* Render alert messages */}
           {alerts.map((alert) => (
@@ -194,8 +202,6 @@ const StudentsList: React.FC = () => {
           message={`Are you sure you want to delete this student?`}
         />
       )}
-
-
     </div>
   );
 };

@@ -7,8 +7,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import SecondaryLabel2 from '../../../components/Secondary Label/Seondary Label2';
 import { useAuth } from "../../../AuthContext";
 
-
 const PopupRecorder: React.FC = () => {
+  // State variables
   const [videoCount, setVideoCount] = useState('');
   const [placements, setPlacements] = useState('');
   const [selectedStart, setSelectedStart] = useState('Select');
@@ -22,9 +22,9 @@ const PopupRecorder: React.FC = () => {
   const location = useLocation();
   const auth = useAuth();
   const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
-  const [toast, showToast] = useState(false)
+  const [toast, showToast] = useState(false);
 
-
+  // Function to display the toast
   const displayToast = () => {
     showToast(true);
   }
@@ -43,63 +43,48 @@ const PopupRecorder: React.FC = () => {
     setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
   };
 
-
+  // useEffect to parse query parameters from the location object
   useEffect(() => {
-    // Parse the query parameters from the location object
     const queryParams = new URLSearchParams(location.search);
     const dayParam = queryParams.get('day');
-    const monthParam = queryParams.get('month'); 
+    const monthParam = queryParams.get('month');
 
-   
-
-    // convert dayParam to a number
+    // Convert dayParam to a number
     if (dayParam) {
       const numericDay = parseInt(dayParam, 10);
       setDay(numericDay);
     } else {
-      setDay(0); // If dayParam is null or undefined, set it to an empty string
+      setDay(0);
     }
-  
-  
+
     // Convert numeric month value to corresponding month name
     if (monthParam) {
-      const numericMonth = parseInt(monthParam, 10); // Turn the monthParam string to integer
+      const numericMonth = parseInt(monthParam, 10);
       if (numericMonth >= 0 && numericMonth < monthNames.length) {
         setMonth(monthNames[numericMonth]);
       } else {
-        setMonth(''); // Default value if monthParam is invalid
+        setMonth('');
       }
     } else {
-      setMonth(''); // If monthParam is null or undefined, set it to an empty string
+      setMonth('');
     }
-
-    
   }, [location.search]);
-  
 
-
-
-
+  // Function to convert time to 24-hour format
   const convertTimeToHours = (time: string): number => {
-    const numericHour = parseInt(time, 10); // Convert the hour part of the time string to a number
+    const numericHour = parseInt(time, 10);
     const isPM = time.includes('pm');
 
     if (isPM && numericHour !== 12) {
-      // If it's in the afternoon (PM) and not 12pm, add 12 to convert to 24-hour format
       return numericHour + 12;
     } else if (!isPM && numericHour === 12) {
-      // If it's 12am (midnight), set it to 0 in 24-hour format
       return 0;
     } else {
-      // If it's in the morning (AM) or 12pm (noon), keep it as it is
       return numericHour;
     }
   };
 
-
-
-
-
+  // Event handlers for start and stop time selection
   const handleStartSelection = (value: string) => {
     setSelectedStart(value);
     const startHour = convertTimeToHours(value);
@@ -112,6 +97,7 @@ const PopupRecorder: React.FC = () => {
     setSelectedStopHour(stopHour);
   };
 
+  // Event handlers for video count, placements, and student selection
   const handleVideoCount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoCount(event.target.value);
   };
@@ -124,13 +110,13 @@ const PopupRecorder: React.FC = () => {
     setSelectedStudents(selectedValues);
   };
 
+  // Event handler for submitting the report
   const handleRecordReport = async (event: React.FormEvent) => {
     event.preventDefault();
 
     // Check if the stop hour is selected
     if (selectedStartHour && (selectedStop === 'Select' || !selectedStop)) {
       displayToast();
-      // Alert user that stophour must be selected
       addAlert('Please select the stop hour!');
       return;
     }
@@ -138,7 +124,6 @@ const PopupRecorder: React.FC = () => {
     const hours = selectedStopHour - selectedStartHour;
 
     if (hours || videoCount || placements || selectedStudents.length > 0) {
-
       const currentDate = new Date();
       const year = currentDate.getFullYear();
       const reportDay = `${month} ${day} ${year}`;
@@ -158,31 +143,24 @@ const PopupRecorder: React.FC = () => {
         const newReportDocRef = doc(db, auth.currentUser?.uid, "Reports");
         const newReportDocSnapshot = await getDoc(newReportDocRef);
 
-
         if (!newReportDocSnapshot.exists()) {
           // Create the Reports document if it doesn't exist
           await setDoc(newReportDocRef, {});
         }
 
-        // Get the existing report object inside the main object
-        const existingData = newReportDocSnapshot.data()|| {};
-
-        // Check if the report day already exists in the current month-year object
+        const existingData = newReportDocSnapshot.data() || {};
         const currentMonthData = existingData[`${month} ${year}`];
         const updatedData = {
           ...existingData,
           [`${month} ${year}`]: {
-            ...(currentMonthData || {}), // Copy existing data if it exists
-            ...newReport, // Add or update the new report day data
+            ...(currentMonthData || {}),
+            ...newReport,
           },
         };
 
-        // Update the month-year document with the updated reports object
         await setDoc(newReportDocRef, updatedData);
 
         displayToast();
-
-        // Optionally, show a success message to the user
         addAlert('Report added successfully!');
 
         // Reset the input fields after successful addition
@@ -197,7 +175,6 @@ const PopupRecorder: React.FC = () => {
           navigate("/");
         }, 3000);
       } catch (error) {
-        // Handle error if the report addition fails
         console.error('Error adding report:', error);
         displayToast();
         addAlert('Could Not Add The Report!');
@@ -205,42 +182,46 @@ const PopupRecorder: React.FC = () => {
     }
   };
 
-
   return (
     <div className="whole-container">
       <div className="popup text-white rounded">
         <form onSubmit={handleRecordReport}>
           <h2>Record Report</h2>
+          {/* Render SecondaryLabel for start time selection */}
           <SecondaryLabel
             text={labels.starth}
             array={times}
             onClick={handleStartSelection}
             value={selectedStart}
-            disabled={selectedStart === 'Select'} // Disable the stop hour selection if the start hour is not selected
+            disabled={selectedStart === 'Select'}
           />
           {selectedStart !== 'Select' && (
+            // Render SecondaryLabel for stop time selection
             <SecondaryLabel
               text={labels.stoph}
               array={times.filter((time) => {
                 const timeIn24HourFormat = convertTimeToHours(time);
                 return timeIn24HourFormat > selectedStartHour;
-              })} // Filter out times that are below the selected start hour
+              })}
               onClick={handleStopSelection}
               value={selectedStop}
             />
           )}
+          {/* Render PrimaryLabel for video count input */}
           <PrimaryLabel
             text={labels.video}
             inputType="number"
             value={videoCount}
             onChange={handleVideoCount}
           />
+          {/* Render PrimaryLabel for placements input */}
           <PrimaryLabel
             text={labels.placement}
             inputType="number"
             value={placements}
             onChange={handlePlacements}
           />
+          {/* Render SecondaryLabel2 for student selection */}
           <SecondaryLabel2
             text={labels.selecteds}
             array={[]}
@@ -249,6 +230,7 @@ const PopupRecorder: React.FC = () => {
             onSelectMultiple={setSelectedStudents}
             value={selectedStudents.length > 0 ? selectedStudents.join(', ') : 'Open Students'}
           />
+          {/* Render Button for submitting the report */}
           <Button text={buttons.save} />
         </form>
         {/* Render alert messages */}

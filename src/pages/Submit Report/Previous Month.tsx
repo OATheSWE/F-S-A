@@ -89,7 +89,7 @@ const PreviousMonth: React.FC = () => {
               // Count each student as one for Total Bible Studies
               if (Array.isArray(record.students)) {
                 record.students.forEach((student: string) => {
-                  uniqueBibleStudies.add(student);
+                  uniqueBibleStudies.add(student); 
                 });
               }
 
@@ -131,6 +131,7 @@ const PreviousMonth: React.FC = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+        displayToast();
         addAlert('Cannot Fetch Feild Service Data!');
       }
     };

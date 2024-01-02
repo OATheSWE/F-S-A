@@ -8,6 +8,7 @@ import { db } from '../../../firebase-config';
 import { updateDoc, doc, collection, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from "../../../AuthContext";
 
+// Define the structure of a student
 type Student = {
   id: string;
   name: string;
@@ -21,7 +22,9 @@ type Student = {
   };
 };
 
+// Functional component for updating student information
 const UpdateStudents: React.FC = () => {
+  // State variables for managing navigation, form inputs, authentication, alerts, and toast
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [updatedName, setUpdatedName] = useState('');
@@ -32,12 +35,12 @@ const UpdateStudents: React.FC = () => {
   const [extraNotes, setExtraNotes] = useState('');
   const auth = useAuth();
   const [alerts, setAlerts] = useState<Array<{ id: number; message: string }>>([]);
-  const [toast, showToast] = useState(false)
+  const [toast, showToast] = useState(false);
 
-
+  // Function to display the toast
   const displayToast = () => {
     showToast(true);
-  }
+  };
 
   // Function to add a new alert message
   const addAlert = (message: string) => {
@@ -53,9 +56,7 @@ const UpdateStudents: React.FC = () => {
     setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== id));
   };
 
-
-
-
+  // Effect to fetch the student's data when the component mounts
   useEffect(() => {
     const fetchStudent = async () => {
       try {
@@ -90,10 +91,8 @@ const UpdateStudents: React.FC = () => {
     fetchStudent();
   }, [db, id]);
 
-
-
+  // Function to handle updating the location using the Geolocation API
   const handleUpdateLocation = () => {
-    // Use the Geolocation API to retrieve the user's current location
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -110,8 +109,7 @@ const UpdateStudents: React.FC = () => {
     );
   };
 
-
-
+  // Function to handle updating the student information
   const handleUpdate = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -141,10 +139,10 @@ const UpdateStudents: React.FC = () => {
             // Save the updated studentsData back to Firestore
             await setDoc(studentsDocRef, studentsData);
 
+            // Navigate to the students list page after a delay
             setTimeout(() => {
               navigate("/students");
-            }, 3000)
-
+            }, 3000);
 
             displayToast();
             addAlert('Student Updated Successfully!');
@@ -164,25 +162,23 @@ const UpdateStudents: React.FC = () => {
     }
   };
 
-
-
-
-
+  // Render the update student form
   return (
     <div className="whole-container">
       <div className="popup text-white rounded new-students">
         <form onSubmit={handleUpdate}>
+          {/* Input fields for updating student information */}
           <PrimaryLabel text={labels.name} inputType="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
-          <PrimaryLabel
-            text={labels.bofstudy} inputType="text" value={updatedBook} onChange={(e) => setUpdatedBook(e.target.value)} />
-          <PrimaryLabel
-            text={labels.question} inputType="text" value={updatedQuestion} onChange={(e) => setUpdatedQuestion(e.target.value)} />
+          <PrimaryLabel text={labels.bofstudy} inputType="text" value={updatedBook} onChange={(e) => setUpdatedBook(e.target.value)} />
+          <PrimaryLabel text={labels.question} inputType="text" value={updatedQuestion} onChange={(e) => setUpdatedQuestion(e.target.value)} />
           <PrimaryLabel text={labels.studentNumber} inputType='text' value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} />
           <PrimaryLabel text={labels.extraNotes} inputType='text' value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
+          {/* Button to update location */}
           <div onClick={handleUpdateLocation} style={{ width: '60%' }}>
             Update Location
             <IconImports.FaMapMarkerAlt className="icon-locate" />
           </div>
+          {/* Button to submit the update */}
           <Button text={buttons.update} />
         </form>
         {/* Render alert messages */}
