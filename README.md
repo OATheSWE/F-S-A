@@ -1,6 +1,6 @@
 # Field Service Assistant
 
-Field Service Assistant is a web application designed to help manage and streamline field service activities. Whether you're involved in community outreach, door-to-door preaching, or any field service work, this tool can assist you in tracking your activities, managing students or team members, and reporting your progress.
+Field Service Assistant is a web application designed to help manage and streamline field service activities. Whether you're involved in community outreach, door-to-door preaching, or any field service work, this tool can assist you in tracking your activities, managing students or team members, and reporting your progress. This is a link to the 
 
 
 ## Features
@@ -32,8 +32,8 @@ Before you begin, ensure you have met the following requirements:
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/OATheSWE/field-service-assistant.git
-   cd field-service-assistant
+   git clone https://github.com/OATheSWE/F-S-A.git
+   cd F-S-A
 
 2. Install the dependencies:
 
