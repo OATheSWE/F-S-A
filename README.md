@@ -1,6 +1,6 @@
 # Field Service Assistant
 
-Field Service Assistant is a web application designed to help manage and streamline field service activities. Whether you're involved in community outreach, door-to-door sales, or any field service work, this tool can assist you in tracking your activities, managing students or team members, and reporting your progress.
+Field Service Assistant is a web application designed to help manage and streamline field service activities. Whether you're involved in community outreach, door-to-door preaching, or any field service work, this tool can assist you in tracking your activities, managing students or team members, and reporting your progress.
 
 
 ## Features
@@ -37,8 +37,10 @@ Before you begin, ensure you have met the following requirements:
 
 2. Install the dependencies:
 
-       npm install
+      pnpm install
 
+
+// If you want you can create your own firebase account and setup if not skip to step 4
 3. Create a Firebase config file:
 
 Create a Firebase config file in the src/firebase-config.js directory. Add your Firebase configuration details to this file.
@@ -62,7 +64,7 @@ Create a Firebase config file in the src/firebase-config.js directory. Add your 
 
 4. Start the development server:
 
-       npm run dev
+      pnpm run dev
 
 5. Open your web browser and go to http://localhost:3000 to view the application.
 
@@ -80,7 +82,7 @@ Create a Firebase config file in the src/firebase-config.js directory. Add your 
    Manage Students: Add and manage students or team members you work with.
 
 Acknowledgments
-  Thanks to the Firebase team for providing a powerful and easy-to-use backend service.
+  Thanks to the Firebase team for providing a powerful and easy-to-use backend service and also the Ionic Team for Capacitor as well.
   Hat tip to anyone whose code was used.
 
 Contact
