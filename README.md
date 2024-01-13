@@ -66,7 +66,7 @@ Create a Firebase config file in the src/firebase-config.js directory. Add your 
 
       pnpm run dev
 
-5. Open your web browser and go to http://localhost:3000 to view the application.
+5. Open your web browser and go to http://localhost:5173 to view the application.
 
 6. Usage
    Sign Up: Create an account using your email and password.
