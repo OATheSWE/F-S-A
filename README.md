@@ -70,7 +70,7 @@ Before you begin, ensure you have met the following requirements:
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/OATheSWE/F-S-A.git 
+   git clone --depth 1 https://github.com/OATheSWE/F-S-A.git 
    cd F-S-A
    ```
 
