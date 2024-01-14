@@ -1,6 +1,6 @@
 # Field Service Assistant
 
-Field Service Assistant is a web application designed to help manage and streamline field service activities. Whether you're involved in community outreach, door-to-door preaching, or any field service work, this tool can assist you in tracking your activities, managing students or team members, and reporting your progress. This is a link to the [Field Service Assistant](https://feild-service-assistant.web.app/) application. Here is a link to the project on github - https://github.com/OATheSWE/F-S-A.
+Field Service Assistant is a web application designed to help manage and streamline field service activities. Whether you're involved in community outreach, door-to-door preaching, or any field service work, this tool can assist you in tracking your activities, managing students or team members, and reporting your progress. This is a link to the [Field Service Assistant](https://feild-service-assistant.web.app/) application. Here is a link to the project on github - https://github.com/OATheSWE/F-S-A. Here is a link to my project screen cast - https://drive.google.com/file/d/1R6bQSFucyh2s5azFOfEnwjxZfWLmhDIu/view?usp=sharing
 
 ## Tech Stack
 
@@ -102,6 +102,9 @@ Before you begin, ensure you have met the following requirements:
 - Thanks to the Ionic Team for Capacitor for hybrid application development.
 
 Hat tip to anyone whose code was used.
+
+
+Here is a link to my project screen cast - https://drive.google.com/file/d/1R6bQSFucyh2s5azFOfEnwjxZfWLmhDIu/view?usp=sharing
 
 ## Contact
 
